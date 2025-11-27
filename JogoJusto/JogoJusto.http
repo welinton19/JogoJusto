@@ -1,0 +1,6 @@
+@JogoJusto_HostAddress = http://localhost:5095
+
+GET {{JogoJusto_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
