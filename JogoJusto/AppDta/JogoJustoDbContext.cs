@@ -5,6 +5,8 @@ namespace JogoJusto.AppDta;
 
 public class JogoJustoDbContext : DbContext
 {
+    internal readonly object Token;
+
     public JogoJustoDbContext(DbContextOptions<JogoJustoDbContext> options) : base(options)
     {
     }
