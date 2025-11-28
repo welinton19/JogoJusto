@@ -1,10 +1,11 @@
 ﻿using JogoJusto.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace JogoJusto.DTO;
+namespace JogoJusto.ViewModel;
 
-public class EmpresaCreateDto
+public class EmpresaViewModel
 {
+    public int EmpresaId { get; set; }
     public string InscricaoEstadual { get; set; } = string.Empty;
     public string Nome { get; set; } = string.Empty;
 

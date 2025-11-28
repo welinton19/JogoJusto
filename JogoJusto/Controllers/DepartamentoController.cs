@@ -1,5 +1,8 @@
-﻿using JogoJusto.AppDta;
+﻿using AutoMapper;
+using JogoJusto.AppDta;
 using JogoJusto.Models;
+using JogoJusto.Service;
+using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,27 +12,33 @@ namespace JogoJusto.Controllers;
 [Route("api/departamento")]
 public class DepartamentoController : ControllerBase
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
+    private readonly IDepartamentoService _departamentoService;
+    private readonly IMapper _mapper;
 
-    public DepartamentoController(JogoJustoDbContext jogodbcontext)
+    
+
+    public DepartamentoController(IDepartamentoService departamentoService, IMapper mapper)
     {
-        _jogodbcontext = jogodbcontext;
+        _departamentoService = departamentoService;
+        _mapper = mapper;
     }
 
     [Authorize]
     [HttpPost]
-    public IActionResult CriarDepartamento([FromBody] DepartamentoModel departamento)
+    public IActionResult CriarDepartamento([FromBody] DepartamentoViewModel departamento)
     {
-        _jogodbcontext.Departamento.Add(departamento);
-        _jogodbcontext.SaveChanges();
-        return CreatedAtAction(nameof(DepartamentoModel), new { id = departamento.IdDepartamento }, departamento);
+        
+        _departamentoService.CriarDepartamento(departamento.NomeDepartamento);
+        return Ok(departamento);
     }
 
     [Authorize]
     [HttpGet]
-    public IActionResult GetDepartamentos()
+    public ActionResult<IEnumerable<DepartamentoViewModel>> GetDepartamentos()
     {
-        var departamentos = _jogodbcontext.Departamento.ToList();
-        return Ok(departamentos);
+        var departamentos = _departamentoService.GetDepartamentos();
+        return Ok(departamentos);       
     }
+
+    
 }

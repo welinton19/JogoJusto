@@ -7,5 +7,5 @@ public interface IFuncionarioService
     object GetFuncionarioPorId(int id);
     void AtualizarFuncionario(object funcionario);
     
-    void DetallaFuncionario(int id);
+    void DeletarFuncionario(int id);
 }

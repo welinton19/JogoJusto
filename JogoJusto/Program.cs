@@ -1,5 +1,6 @@
 using JogoJusto.AppDta;
 using JogoJusto.Auth;
+using JogoJusto.Middleware;
 using JogoJusto.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+//#region Tratamento de erro global
+//builder.Services.AddTransient<ErrorHanddlerMiddleware>();
+//#endregion
 
 
 builder.Services.AddScoped<IAuthorizationHandler, RoleAuthorizationHandler>();
@@ -59,12 +64,15 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<ErrorHanddlerMiddleware>();
 
 app.UseHttpsRedirection();
 

@@ -1,5 +1,8 @@
-﻿using JogoJusto.AppDta;
+﻿using AutoMapper;
+using JogoJusto.AppDta;
 using JogoJusto.Models;
+using JogoJusto.Service;
+using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -8,35 +11,33 @@ namespace JogoJusto.Controllers;
 [Route("api/esglog")]
 public class EsgLogController : ControllerBase
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
+    private readonly IEsgLogService _esglogservice;
+    private readonly IMapper _mapper;
 
-    public EsgLogController(JogoJustoDbContext jogodbcontext)
+    public EsgLogController(IEsgLogService esglogservice, IMapper mapper)
     {
-        _jogodbcontext = jogodbcontext;
+        _esglogservice = esglogservice;
+        _mapper = mapper;
     }
 
     [HttpPost]
-    public IActionResult CriarEsgLog([FromBody] EsgLogModel esgLog)
+    public IActionResult CriarEsgLog([FromBody] EsgLogViewModel esgLog)
     {
-        _jogodbcontext.EsgLogModel.Add(esgLog);
-        _jogodbcontext.SaveChanges();
-        return CreatedAtAction(nameof(EsgLogModel), new { id = esgLog.IdEsgLog }, esgLog);
+        _esglogservice.CriarEsgLog(esgLog);
+        return Ok();
     }
 
     [HttpGet]
     public IActionResult GetEsgLogs()
     {
-        var esgLogs = _jogodbcontext.EsgLogModel.ToList();
+        var esgLogs = _esglogservice.GetEsgLogs();
         return Ok(esgLogs);
     }
 
     [HttpDelete]
     public IActionResult DeleteEsgLogs()
     {
-        var esgLogs = _jogodbcontext.EsgLogModel.ToList();
-        _jogodbcontext.EsgLogModel.RemoveRange(esgLogs);
-        _jogodbcontext.SaveChanges();
-        return NoContent();
+        _esglogservice.DeleteEsgLogs();
+        return Ok();
     }
-
 }

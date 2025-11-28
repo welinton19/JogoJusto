@@ -51,44 +51,19 @@ public class MetaEsgService : IMetaEsgService
         }
     }
 
-    public object ObterMetaEsgPorId(int id)
+    public void GetMeaEsg()
     {
-        var metaExistente = _jogodbcontext.MetaEsg.Find(id);
-        if (metaExistente != null) 
+        var metas = _jogodbcontext.MetaEsg.ToList();
+        foreach (var met in metas) 
         {
-            return metaExistente;
+            Console.WriteLine($"ID: {met.IdMetaEsg}, Tipo: {met.TipoMetaEsg}, Descrição: {met.DescricaoMetaEsg}, Valor Referência: {met.ValorReferenciaMetaEsg}, Valor Atual: {met.ValorAtualMetaEsg}, Atualização Dados: {met.AtualizacaoDados}, Prazo Meta ESG: {met.PrazoMetaEsg}");
+            Console.WriteLine( met.ToString() );
+
         }
-        else
-        {
-            throw new Exception("Meta ESG não encontrada.");
-        }
+
     }
 
-    public object ObterMetaEsgPorId(object metaEsgData)
-    {
-        var metaEsg = (JogoJusto.Models.MetaEsgModel)metaEsgData;
-        var metaExistente = _jogodbcontext.MetaEsg.Find(metaEsg.IdMetaEsg);
-        if (metaExistente != null) 
-        {
-            return metaExistente;
-        }
-        else
-        {
-            throw new Exception("Meta ESG não encontrada.");
-        }
-    }
+    
 
-    void IMetaEsgService.ObterMetaEsgPorId(object metaEsgData)
-    {
-        var metaEsg = (JogoJusto.Models.MetaEsgModel)metaEsgData;
-        var metaExistente = _jogodbcontext.MetaEsg.Find(metaEsg.IdMetaEsg);
-        if (metaExistente != null) 
-        {
-            return;
-        }
-        else
-        {
-            throw new Exception("Meta ESG não encontrada.");
-        }
-    }
+    
 }

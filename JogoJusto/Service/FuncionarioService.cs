@@ -44,7 +44,7 @@ public class FuncionarioService : IFuncionarioService
         var func = funcionario as Models.FuncionarioModel;
     }
 
-    public void DetallaFuncionario(int id)
+    public void DeletarFuncionario(int id)
     {
         var funcionario = _jogodbcontext.Funcionario.Find(id);
     }

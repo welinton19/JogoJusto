@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace JogoJusto.DTO;
+namespace JogoJusto.ViewModel;
 
-public class UsuarioDto
+public class UsuarioViewModel
 {
-  
+    public int Id { get; set; }
     
     public string Email { get; set; } = string.Empty;
     

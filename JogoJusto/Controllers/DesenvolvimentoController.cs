@@ -1,5 +1,8 @@
-﻿using JogoJusto.AppDta;
+﻿using AutoMapper;
+using JogoJusto.AppDta;
 using JogoJusto.Models;
+using JogoJusto.Service;
+using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,45 +12,39 @@ namespace JogoJusto.Controllers;
 [Route("api/desenvolvimento")]
 public class DesenvolvimentoController : ControllerBase
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
+    private readonly IDesenvolvimentoService _desenvolvimentoService;
+    private readonly IMapper _mapper;
 
-    public DesenvolvimentoController(JogoJustoDbContext jogodbcontext)
+    public DesenvolvimentoController(IDesenvolvimentoService desenvolvimentoService, IMapper mapper)
     {
-        _jogodbcontext = jogodbcontext;
+        _desenvolvimentoService = desenvolvimentoService;
+        _mapper = mapper;
     }
 
     [Authorize]
     [HttpPost]
-    public IActionResult CriarDesenvolvimento([FromBody] DesenvolvimentoModel desenvolvimento)
+    public IActionResult CriarDesenvolvimento([FromBody] DesenvolvimentoViewModel desenvolvimento)
     {
-        _jogodbcontext.Desenvolvimento.Add(desenvolvimento);
-        _jogodbcontext.SaveChanges();
-        return CreatedAtAction(nameof(DesenvolvimentoModel), new { id = desenvolvimento.IdDesenvolvimento }, desenvolvimento);
+        var desenvolvimentoModel = _mapper.Map<DesenvolvimentoModel>(desenvolvimento);
+        _desenvolvimentoService.CriarDesenvolvimento(desenvolvimentoModel);
+        return CreatedAtAction(nameof(GetDesenvolvimentoPorId), new { id = desenvolvimentoModel.IdDesenvolvimento }, desenvolvimentoModel);
     }
 
     [Authorize]
     [HttpPut]
-    public IActionResult AtualizarDesenvolvimento([FromBody] DesenvolvimentoModel desenvolvimento)
+    public IActionResult AtualizarDesenvolvimento([FromBody] DesenvolvimentoViewModel desenvolvimento)
     {
-        var desenvolvimentoExistente = _jogodbcontext.Desenvolvimento.Find(desenvolvimento.IdDesenvolvimento);
-        if (desenvolvimentoExistente == null)
-        {
-            return NotFound("Desenvolvimento não encontrado.");
-        }
-        desenvolvimentoExistente.NomeTreinamento = desenvolvimento.NomeTreinamento;
-        desenvolvimentoExistente.DuracaoHoras = desenvolvimento.DuracaoHoras;
-        desenvolvimentoExistente.DataConclusao = desenvolvimento.DataConclusao;
-        desenvolvimentoExistente.StatusRegistro = desenvolvimento.StatusRegistro;
-        desenvolvimentoExistente.DescricaoRegistro = desenvolvimento.DescricaoRegistro;
-        _jogodbcontext.SaveChanges();
+        var desenvolvimentoModel = _mapper.Map<DesenvolvimentoModel>(desenvolvimento);
+        _desenvolvimentoService.AtualizarDesenvolvimento(desenvolvimentoModel);
         return NoContent();
+
     }
 
     [Authorize]
     [HttpGet]
     public IActionResult GetDesenvolvimentos()
     {
-        var desenvolvimentos = _jogodbcontext.Desenvolvimento.ToList();
+        var desenvolvimentos = _desenvolvimentoService.GetDesenvolvimentos();
         return Ok(desenvolvimentos);
     }
 
@@ -55,11 +52,7 @@ public class DesenvolvimentoController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetDesenvolvimentoPorId(int id)
     {
-        var desenvolvimento = _jogodbcontext.Desenvolvimento.Find(id);
-        if (desenvolvimento == null)
-        {
-            return NotFound("Desenvolvimento não encontrado.");
-        }
+        var desenvolvimento = _desenvolvimentoService.GetDesenvolvimentoPorId(id);
         return Ok(desenvolvimento);
     }
 
@@ -67,13 +60,7 @@ public class DesenvolvimentoController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeletarDesenvolvimento(int id)
     {
-        var desenvolvimento = _jogodbcontext.Desenvolvimento.Find(id);
-        if (desenvolvimento == null)
-        {
-            return NotFound("Desenvolvimento não encontrado.");
-        }
-        _jogodbcontext.Desenvolvimento.Remove(desenvolvimento);
-        _jogodbcontext.SaveChanges();
-        return NoContent();
+        var desenvolvimento = _desenvolvimentoService.GetDesenvolvimentoPorId(id);
+        return Ok(desenvolvimento);
     }
 }

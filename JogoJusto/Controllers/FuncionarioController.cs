@@ -1,5 +1,8 @@
-﻿using JogoJusto.AppDta;
+﻿using AutoMapper;
+using JogoJusto.AppDta;
 using JogoJusto.Models;
+using JogoJusto.Service;
+using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,70 +12,54 @@ namespace JogoJusto.Controllers;
 [Route("api/funcionario")]
 public class FuncionarioController: ControllerBase
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
-    public FuncionarioController(JogoJustoDbContext jogodbcontext)
+    private readonly IFuncionarioService _funcionarioService;
+    private readonly IMapper _mapper;
+
+    public FuncionarioController(IFuncionarioService funcionarioService, IMapper mapper)
     {
-        _jogodbcontext = jogodbcontext;
+        _funcionarioService = funcionarioService;
+        _mapper = mapper;
     }
 
     [Authorize]
     [HttpPost]
-    public IActionResult CriarFuncionario([FromBody] FuncionarioModel funcionario)
+    public IActionResult CriarFuncionario([FromBody] FuncionarioViewModel funcionario)
     {
-       var novofunc = _jogodbcontext.Funcionario;
-         novofunc.Add(funcionario);
-        return Ok(novofunc);
+       _funcionarioService.CriarFuncionario(funcionario);
+        return CreatedAtAction(nameof(GetFuncionarioPorId), new { id = funcionario.FuncionarioId }, funcionario);
+
+
     }
 
     [Authorize]
     [HttpPut("{id}")]
-    public IActionResult AtualizarFuncionario([FromBody] FuncionarioModel funcionario)
+    public IActionResult AtualizarFuncionario([FromBody] FuncionarioViewModel funcionario)
     {
-        var funcionarioExistente = _jogodbcontext.Funcionario.Find(funcionario.FuncionarioId);
-        if (funcionarioExistente == null)
-        {
-            return NotFound("Funcionário não encontrado.");
-        }
-        funcionarioExistente.Nome = funcionario.Nome;
-        funcionarioExistente.Cargo = funcionario.Cargo;
-        funcionarioExistente.Departamento = funcionario.Departamento;
-        funcionarioExistente.Mentor = funcionario.Mentor;
-        funcionarioExistente.DataContratacao = funcionario.DataContratacao;
-        _jogodbcontext.SaveChanges();
-        return NoContent();
+        _funcionarioService.AtualizarFuncionario(funcionario);
+        return Ok(funcionario);
     }
 
     [Authorize]
     [HttpGet]
     public IActionResult GetFuncionarios()
     {
-        var funcionarios = _jogodbcontext.Funcionario.ToList();
-        return Ok(funcionarios);
+        _funcionarioService.GetFuncionarios();
+        return Ok();
     }
 
     [Authorize]
     [HttpGet("{id}")]
     public IActionResult GetFuncionarioPorId(int id)
     {
-        var funcionario = _jogodbcontext.Funcionario.Find(id);
-        if (funcionario == null)
-        {
-            return NotFound("Funcionário não encontrado.");
-        }
-        return Ok(funcionario);
+        _funcionarioService.GetFuncionarioPorId(id);
+        return Ok();
     }
 
     [Authorize]
     [HttpDelete("{id}")]
     public IActionResult DeletarFuncionario(int id)
     {
-        var funcionario = _jogodbcontext.Funcionario.Find(id);
-        if (funcionario == null)
-        {
-            return NotFound("Funcionário não encontrado.");
-        }
-        _jogodbcontext.Funcionario.Remove(funcionario);
-        _jogodbcontext.SaveChanges();
-        return NoContent();
+        _funcionarioService.DeletarFuncionario(id);
+        return Ok();
     }
 }

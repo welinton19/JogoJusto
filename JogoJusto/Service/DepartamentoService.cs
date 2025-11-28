@@ -1,4 +1,5 @@
 ﻿using JogoJusto.AppDta;
+using JogoJusto.ViewModel;
 
 namespace JogoJusto.Service;
 
@@ -22,5 +23,15 @@ public class DepartamentoService : IDepartamentoService
     public void GestarDepartamento(int nome)
     {
         var departamento = _jogodbcontext.Departamento.Find(nome);
+    }
+
+    public IEnumerable<DepartamentoViewModel> GetDepartamentos()
+    {
+        var departamentos = _jogodbcontext.Departamento.Select(d => new DepartamentoViewModel
+        {
+            IdDepartamento = d.IdDepartamento,
+            NomeDepartamento = d.NomeDepartamento
+        }).ToList();
+        return departamentos;
     }
 }

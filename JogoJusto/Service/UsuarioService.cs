@@ -27,4 +27,10 @@ public class UsuarioService : IUsuarioService
             Password = senha
         };  
     }
+
+    public void GetUsuario()
+    {
+        var usuarios = _jogodbcontext.Usuario.ToList();
+
+    }
 }
