@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using JogoJusto.AppDta;
+﻿using JogoJusto.AppDta;
 using JogoJusto.Models;
-using JogoJusto.Service;
-using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -11,39 +8,38 @@ namespace JogoJusto.Controllers;
 [Route("api/usuario")]
 public class UsuarioController : ControllerBase
 {
-    private readonly IUsuarioService _usuarioService;
-    private readonly IMapper _mapper;
+    private readonly JogoJustoDbContext _jogodbcontext;
 
-    public UsuarioController(IUsuarioService usuarioService, IMapper mapper)
+    public UsuarioController(JogoJustoDbContext jogodbcontext)
     {
-        _usuarioService = usuarioService;
-        _mapper = mapper;
+        _jogodbcontext = jogodbcontext;
     }
 
     [HttpPost]
-    public IActionResult CriarUsuario([FromBody] UsuarioViewModel usuario)
+    public IActionResult CriarUsuario([FromBody] UsuarioModel usuario)
     {
-        _usuarioService.CriarUsuario(usuario.Tipo, usuario.Email, usuario.Password);
-        return CreatedAtAction(nameof(CriarUsuario), new { id = usuario.Id }, usuario);
-
+        _jogodbcontext.Usuario.Add(usuario);
+        _jogodbcontext.SaveChanges();
+        return CreatedAtAction(nameof(User), new { id = usuario.Id }, usuario);
     }
 
     [HttpPost]
     [Route("login")]
-    public IActionResult Login([FromBody] UsuarioViewModel usuario)
+    public IActionResult Login([FromBody] UsuarioModel usuario)
     {
-        var autenticado = _usuarioService.AutenticarUsuario(usuario.Email, usuario.Password);
-        if (autenticado)
+        var usuarioExistente = _jogodbcontext.Usuario
+            .FirstOrDefault(u => u.Email == usuario.Email && u.Password == usuario.Password);
+        if (usuarioExistente == null)
         {
-            return Ok("Login realizado com sucesso!");
+            return Unauthorized("Credenciais inválidas.");
         }
-        return Unauthorized("Email ou senha inválidos.");
+        return Ok("Login bem-sucedido.");
     }
 
     [HttpGet]
     public IActionResult User()
     {
-        _usuarioService.GetUsuario();
-        return Ok();
+        var usuarios = _jogodbcontext.Usuario.ToList();
+        return Ok(usuarios);
     }
 }

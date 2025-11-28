@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using JogoJusto.AppDta;
-using JogoJusto.Service;
+﻿using JogoJusto.AppDta;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -8,20 +6,18 @@ namespace JogoJusto.Controllers;
 [ApiController]
 public class TokenController : ControllerBase
 {
-    private readonly ITokenService _tokenService;
-    private readonly IMapper _mapper;
+    private readonly JogoJustoDbContext _jogodbcontext;
 
-    public TokenController(ITokenService tokenService, IMapper mapper)
+    public TokenController(JogoJustoDbContext jogodbcontext)
     {
-        _tokenService = tokenService;
-        _mapper = mapper;
+        _jogodbcontext = jogodbcontext;
     }
 
     [HttpGet]
     [Route("api/token")]
     public IActionResult GetToken()
     {
-        _tokenService.GetHashCode();
-        return Ok();
+        var token = Guid.NewGuid().ToString();
+        return Ok(new { Token = token });
     }
 }

@@ -13,8 +13,8 @@ public class UsuarioService : IUsuarioService
 
     public bool AutenticarUsuario(string email, string senha)
     {
-       var usuarioExistente = _jogodbcontext.Usuario
-            .FirstOrDefault(u => u.Email == email && u.Password == senha);
+        var usuarioExistente = _jogodbcontext.Usuario
+             .FirstOrDefault(u => u.Email == email && u.Password == senha);
         return usuarioExistente != null;
     }
 
@@ -25,12 +25,6 @@ public class UsuarioService : IUsuarioService
             Tipo = tipo,
             Email = email,
             Password = senha
-        };  
-    }
-
-    public void GetUsuario()
-    {
-        var usuarios = _jogodbcontext.Usuario.ToList();
-
+        };
     }
 }
