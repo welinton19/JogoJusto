@@ -23,17 +23,16 @@ public class JogoJustoDbContext : DbContext
 
         modelBuilder.Entity<FuncionarioModel>(entity =>
         {
-        entity.ToTable("T_FUNCIONARIO");
+            entity.ToTable("T_FUNCIONARIO");
 
             entity.Property(e => e.StPcd)
                 .HasConversion(boolToSN)
                 .HasMaxLength(1)
                 .HasColumnType("CHAR(1)")
                 .IsRequired();
-            
-            // Mapeia o decimal para NUMBER(18,2)
+
             entity.Property(e => e.Salario)
-                .HasColumnType("NUMBER(18,2)")
+                .HasColumnType("NUMBER(10,2)")
                 .IsRequired();
         });
 
@@ -48,11 +47,6 @@ public class JogoJustoDbContext : DbContext
             entity.ToTable("T_TOKENS");
         });
 
-        modelBuilder.Entity<FuncionarioModel>(entity =>
-        {
-            entity.ToTable("T_FUNCIONARIO");
-        });
-
         modelBuilder.Entity<DepartamentoModel>(entity =>
         {
             entity.ToTable("T_DEPTO");
@@ -61,6 +55,13 @@ public class JogoJustoDbContext : DbContext
         modelBuilder.Entity<DesenvolvimentoModel>(entity =>
         {
             entity.ToTable("T_DESENV");
+
+            entity.Property(e => e.DuracaoHoras)
+                .HasColumnType("NUMBER(6,2)")
+                .HasPrecision(6, 2);
+
+            entity.Property(e => e.Certificado)
+                .HasColumnType("BLOB");
         });
 
         modelBuilder.Entity<EmpresaModel>(entity =>
@@ -71,6 +72,23 @@ public class JogoJustoDbContext : DbContext
         modelBuilder.Entity<MetaEsgModel>(entity =>
         {
             entity.ToTable("T_META_ESG");
+
+            entity.Property(e => e.ValorReferenciaMetaEsg)
+                .HasColumnType("NUMBER(5,2)")
+                .HasPrecision(5, 2)
+                .IsRequired();
+
+            entity.Property(e => e.ValorAtualMetaEsg)
+                .HasColumnType("NUMBER(5,2)")
+                .HasPrecision(5, 2);
+
+            entity.Property(e => e.AtualizacaoDados)
+                .HasColumnType("DATE");
+
+            entity.Property(e => e.PrazoMetaEsg)
+                .HasColumnType("DATE")
+                .IsRequired();
+
         });
 
         modelBuilder.Entity<EsgLogModel>(entity =>

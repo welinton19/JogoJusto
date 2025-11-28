@@ -8,6 +8,7 @@ public class FuncionarioModel
 {
     [Key]
     [Column("ID_FUNC")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int FuncionarioId { get; set; }
 
     [Required]

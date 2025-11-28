@@ -8,6 +8,7 @@ public class UsuarioModel
 {
     [Key]
     [Column("ID_USUARIO")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     [Required]
     [EmailAddress]
