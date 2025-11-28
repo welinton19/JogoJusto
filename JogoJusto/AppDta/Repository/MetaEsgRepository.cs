@@ -2,11 +2,11 @@
 
 namespace JogoJusto.AppDta.Repository
 {
-    public class MeyaEsgRepository : IMetaEsgRepository
+    public class MetaEsgRepository : IMetaEsgRepository
     {
         private readonly JogoJustoDbContext _jogodbcontext;
 
-        public MeyaEsgRepository(JogoJustoDbContext jogodbcontext)
+        public MetaEsgRepository(JogoJustoDbContext jogodbcontext)
         {
             _jogodbcontext = jogodbcontext;
         }

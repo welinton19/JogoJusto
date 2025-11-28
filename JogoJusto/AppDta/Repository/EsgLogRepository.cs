@@ -1,6 +1,6 @@
 ﻿namespace JogoJusto.AppDta.Repository;
 
-public class EsgLogRepository : IEsLogRepository
+public class EsgLogRepository : IEsgLogRepository
 {
 
     private readonly JogoJustoDbContext _jogodbcontext;

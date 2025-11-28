@@ -1,6 +1,6 @@
 ﻿namespace JogoJusto.AppDta.Repository;
 
-public interface IEsLogRepository
+public interface IEsgLogRepository
 {
     void CriarEsLog(object esgLog);
     void GetEsLogs();
