@@ -1,11 +1,20 @@
-﻿
-namespace JogoJusto.Auth;
+﻿using JogoJusto.Auth;
+using Microsoft.AspNetCore.Authorization;
 
-public class RoleAuthorizationHandler : IAuthorizationHandler
+public class RoleAuthorizationHandler : AuthorizationHandler<RoleRequirement>
 {
-    //private readonly ITokenService _tokenService;
-    public Task<bool> AuthorizeAsync(string userId, string requiredRole)
+    protected override Task HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        RoleRequirement requirement)
     {
-        throw new NotImplementedException();
+        var role = context.User.FindFirst("role")?.Value;
+
+        if (role == requirement.Role)
+        {
+            context.Succeed(requirement);
+        }
+
+        return Task.CompletedTask;
     }
 }
+

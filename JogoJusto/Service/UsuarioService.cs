@@ -1,4 +1,5 @@
 ﻿using JogoJusto.AppDta.Repository;
+using JogoJusto.Models;
 using JogoJusto.Pagination;
 using JogoJusto.ViewModel;
 
@@ -15,10 +16,12 @@ public class UsuarioService : IUsuarioService
         _mapper = mapper;
     }
 
-    public bool AutenticarUsuario(string email, string senha)
+    public object AutenticarUsuario(string email, string password)
     {
-        return _repo.Login(email, senha);
-
+        var usuario = _repo.AutenticarUsuario(email, password);
+        if (usuario == null)
+            return null;
+        return usuario;
     }
 
     public async Task CriarUsuario(string tipo, string email, string senha)

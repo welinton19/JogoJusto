@@ -14,6 +14,7 @@ public class ErrorHanddlerMiddleware
         try
         {
             await _next(context);
+            
         }
         catch (Exception ex)
         {
@@ -24,12 +25,6 @@ public class ErrorHanddlerMiddleware
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = 500;
-        var response = new { message = "An unexpected error occurred.", details = exception.Message };
-        return context.Response.WriteAsJsonAsync(response);
-    }
+    
 
 }

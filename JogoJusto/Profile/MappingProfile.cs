@@ -18,7 +18,7 @@ public class MappingProfile : AutoMapper.Profile
 
         CreateMap<Models.FuncionarioModel, ViewModel.FuncionarioViewModel>().ReverseMap();
 
-        CreateMap<Models.TokenModel, ViewModel.TokenViewModel>().ReverseMap();
+        
     }
 
 

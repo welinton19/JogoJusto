@@ -1,102 +1,64 @@
-using System.Text;
 using JogoJusto.AppDta;
 using JogoJusto.AppDta.Repository;
 using JogoJusto.Auth;
-using JogoJusto.Middleware;
 using JogoJusto.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-//#region Tratamento de erro global
-//builder.Services.AddTransient<ErrorHanddlerMiddleware>();
-//#endregion
-
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
-builder.Services.AddScoped<IAuthorizationHandler, RoleAuthorizationHandler>();
-
-builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
-builder.Services.AddScoped<IEmpresaService, EmpresaService>();
-
-builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
-builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
-
-builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
-builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
-
-builder.Services.AddScoped<IMetaEsgRepository, MetaEsgRepository>();
-builder.Services.AddScoped<IMetaEsgService, MetaEsgService>();
-
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-
-#region configurando autorizacao de papel
-
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<ITokenRepository, TokenRepository>();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes("weliton1912024"))
-    };
-});
-#endregion
-
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminPolicy", policy =>
-        policy.Requirements.Add(new RoleRequirement("Admin")));
-    options.AddPolicy("UserPolicy", policy =>
-        policy.Requirements.Add(new RoleRequirement("User")));
-});
-
-#region conection to database
-var connectionString = builder.Configuration.GetConnectionString("JogoJustoConnection");
-
-builder.Services.AddDbContext<JogoJustoDbContext>(options =>
-    options.UseOracle(connectionString));
-#endregion
-
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+
+
+// JWT
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtSettings.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings.SecretKey)
+            ),
+            ValidateLifetime = true
+        };
+    });
+
+// Services
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+// DB Context
+builder.Services.AddDbContext<JogoJustoDbContext>(options =>
+    options.UseOracle(builder.Configuration.GetConnectionString("JogoJustoConnection")));
+
 var app = builder.Build();
 
-
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseMiddleware<ErrorHanddlerMiddleware>();
 
-app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

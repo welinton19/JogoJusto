@@ -13,25 +13,26 @@ public class UsuarioRepository : IUsuarioRepository
         this._jogoJustoDbContext = jogoJustoDbContext;
     }
 
-    public async Task CriarUsuarioAsync(string email, string senha, string tipo)
+    public UsuarioModel? AutenticarUsuario(string email, string senha)
     {
-       await _jogoJustoDbContext.Usuario.AddAsync(new UsuarioModel
-        {
-            Email = email,
-            Password = senha,
-            Tipo = tipo
-        });
-
-        await _jogoJustoDbContext.SaveChangesAsync();
-    }
-
- 
-    public bool Login(string email, string senha)
-    {
-        var usuarioExistente = _jogoJustoDbContext.Usuario
+        return _jogoJustoDbContext.Usuario
+            .AsNoTracking()
             .FirstOrDefault(u => u.Email == email && u.Password == senha);
-        return usuarioExistente != null;
     }
+
+    public async Task CriarUsuarioAsync(string email, string senha, string tipo) 
+    {
+        await _jogoJustoDbContext.Usuario.AddAsync(new UsuarioModel
+        { 
+            Email = email, 
+            Password = senha, 
+            Tipo = tipo 
+        }); 
+        await _jogoJustoDbContext.SaveChangesAsync(); 
+    }
+
+
+   
 
 
     public async Task<PagedResult<UsuarioModel>> GetUsuariosAsync(int pageNumber, int pageSize)
@@ -55,5 +56,12 @@ public class UsuarioRepository : IUsuarioRepository
             TotalCount = total,
             Items = items
         };
+    }
+
+    public bool Login(string email, string password)
+    {
+        return _jogoJustoDbContext.Usuario
+            .AsNoTracking()
+            .Any(u => u.Email == email && u.Password == password);
     }
 }

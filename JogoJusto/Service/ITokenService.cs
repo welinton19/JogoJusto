@@ -1,6 +1,10 @@
-﻿namespace JogoJusto.Service;
+﻿using JogoJusto.Models;
+
+namespace JogoJusto.Service;
+
 
 public interface ITokenService
 {
-    string CreateToken(int userId, string userName);
+    
+    string GenerateToken(UsuarioModel usuario);
 }

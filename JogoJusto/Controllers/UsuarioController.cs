@@ -1,6 +1,8 @@
-﻿using JogoJusto.Pagination;
+﻿using JogoJusto.Auth;
+using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -10,30 +12,45 @@ namespace JogoJusto.Controllers;
 public class UsuarioController : ControllerBase
 {
     private readonly IUsuarioService _service;
+    private readonly ITokenService _tokenService;
+    
 
-    public UsuarioController(IUsuarioService service)
+    
+
+    public UsuarioController(IUsuarioService service, ITokenService tokenService)
     {
         _service = service;
+        _tokenService = tokenService;
     }
 
-    [HttpPost]
+    [HttpPost("criar")]
     public async Task<IActionResult> CriarUsuario([FromBody] UsuarioCreateViewModel usuario)
     {
         await _service.CriarUsuario(usuario.Tipo, usuario.Email, usuario.Password);
         return Ok("Usuário criado com sucesso.");
     }
 
-    [HttpPost("login")]
-    public IActionResult Login([FromBody] UsuarioLoginViewModel usuario)
-    {
-        var loginResult = _service.AutenticarUsuario(usuario.Email, usuario.Password);
 
-        if (!loginResult)
-        {
+
+
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] UsuarioLoginViewModel model)
+    {
+        var usuario = _service.AutenticarUsuario(model.Email, model.Password);
+
+        if (usuario == null)
             return Unauthorized("Credenciais inválidas.");
-        }
-        return Ok("Login bem-sucedido.");
+
+        var token = _tokenService.GenerateToken((Models.UsuarioModel)usuario);
+
+        return Ok(new
+        {
+            message = "Login realizado com sucesso",
+            token
+        });
+        
     }
+
 
 
 

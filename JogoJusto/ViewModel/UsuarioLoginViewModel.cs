@@ -1,8 +1,7 @@
-﻿namespace JogoJusto.ViewModel
+﻿namespace JogoJusto.ViewModel;
+
+public class UsuarioLoginViewModel
 {
-    public class UsuarioLoginViewModel
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
+    public string Email { get; set; }
+    public string Password { get; set; }
 }
