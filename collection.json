@@ -1,0 +1,145 @@
+{
+    "_type": "export",
+    "__export_format": 4,
+    "__export_date": "2025-11-28T12:00:00.000Z",
+    "__export_source": "insomnia.import",
+    "resources": [
+        {
+            "_id": "wrk_joq_jogo_justo",
+            "parentId": null,
+            "modified": 0,
+            "created": 0,
+            "name": "JogoJusto",
+            "_type": "workspace"
+        },
+        {
+            "_id": "env_joq_base",
+            "parentId": "wrk_joq_joqo_justo",
+            "modified": 0,
+            "created": 0,
+            "name": "Base Environment",
+            "data": {
+                "baseUrl": "https://localhost:5001"
+            },
+            "dataPropertyOrder": {},
+            "color": null,
+            "isPrivate": false,
+            "metaSortKey": -1,
+            "_type": "environment"
+        },
+        {
+            "_id": "env_joq_sub",
+            "parentId": "env_joq_base",
+            "modified": 0,
+            "created": 0,
+            "name": "Dev",
+            "data": {},
+            "dataPropertyOrder": {},
+            "color": null,
+            "isPrivate": false,
+            "metaSortKey": 0,
+            "_type": "environment"
+        },
+        {
+            "_id": "fld_joq_usuario",
+            "parentId": "wrk_joq_jogo_justo",
+            "modified": 0,
+            "created": 0,
+            "name": "Usuario",
+            "description": "Endpoints de usuário",
+            "_type": "request_group"
+        },
+        {
+            "_id": "fld_joq_token",
+            "parentId": "wrk_joq_jogo_justo",
+            "modified": 0,
+            "created": 0,
+            "name": "Token",
+            "description": "Endpoints de token",
+            "_type": "request_group"
+        },
+        {
+            "_id": "req_joq_usuario_criar",
+            "parentId": "fld_joq_usuario",
+            "modified": 0,
+            "created": 0,
+            "url": "{{ baseUrl }}/api/usuario",
+            "name": "Criar Usuario",
+            "description": "Cria um novo usuário",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"SenhaForte123\",\n  \"tipo\": \"User\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {},
+            "metaSortKey": -1,
+            "_type": "request"
+        },
+        {
+            "_id": "req_joq_usuario_login",
+            "parentId": "fld_joq_usuario",
+            "modified": 0,
+            "created": 0,
+            "url": "{{ baseUrl }}/api/usuario/login",
+            "name": "Login",
+            "description": "Autentica o usuário e retorna token (se configurado)",
+            "method": "POST",
+            "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"email\": \"usuario@example.com\",\n  \"password\": \"SenhaForte123\"\n}"
+            },
+            "parameters": [],
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "authentication": {},
+            "metaSortKey": -2,
+            "_type": "request"
+        },
+        {
+            "_id": "req_joq_usuario_listar",
+            "parentId": "fld_joq_usuario",
+            "modified": 0,
+            "created": 0,
+            "url": "{{ baseUrl }}/api/usuario",
+            "name": "Listar Usuarios",
+            "description": "Lista usuários (placeholder: endpoint retorna Ok sem conteúdo atualmente)",
+            "method": "GET",
+            "body": {},
+            "parameters": [],
+            "headers": [],
+            "authentication": {
+                "type": "bearer",
+                "token": ""
+            },
+            "metaSortKey": -3,
+            "_type": "request"
+        },
+        {
+            "_id": "req_joq_token_get",
+            "parentId": "fld_joq_token",
+            "modified": 0,
+            "created": 0,
+            "url": "{{ baseUrl }}/api/token?userId=1&userName=usuario@example.com",
+            "name": "Gerar Token (Query)",
+            "description": "Gera token JWT com base nos parâmetros informados",
+            "method": "GET",
+            "body": {},
+            "parameters": [],
+            "headers": [],
+            "authentication": {},
+            "metaSortKey": -1,
+            "_type": "request"
+        }
+    ]
+}
