@@ -1,4 +1,7 @@
-﻿namespace JogoJusto.Profile;
+﻿using JogoJusto.Models;
+using JogoJusto.ViewModel;
+
+namespace JogoJusto.Profile;
 
 public class MappingProfile : AutoMapper.Profile
 {
@@ -19,6 +22,21 @@ public class MappingProfile : AutoMapper.Profile
         CreateMap<Models.FuncionarioModel, ViewModel.FuncionarioViewModel>().ReverseMap();
 
         CreateMap<Models.TokenModel, ViewModel.TokenViewModel>().ReverseMap();
+
+        CreateMap<FuncionarioCreateViewModel, FuncionarioModel>();
+
+        CreateMap<FuncionarioUpdateViewModel, FuncionarioModel>()
+           .ForAllMembers(opts =>
+           {
+               opts.Condition((src, dest, srcMember) =>
+               {
+                   if (srcMember is string s && string.IsNullOrWhiteSpace(s))
+                       return false;
+
+                   return srcMember != null;
+               });
+           });
+
     }
 
 

@@ -1,13 +1,14 @@
 ﻿using JogoJusto.Models;
-using Newtonsoft.Json.Bson;
+using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
 
 namespace JogoJusto.AppDta.Repository;
 
 public interface IFuncionarioRepository
 {
-    void CriarFuncionario(FuncionarioModel funcionario);
-    void AtualizarFuncionario(FuncionarioModel funcionario);
-    void GetFuncionarios();
-    FuncionarioModel GetFuncionarioPorId(int id);
-    void DeletarFuncionario(int id);
+    Task<FuncionarioModel?> GetByIdAsync(int id);
+    Task <PagedResult<FuncionarioViewModel>> GetFuncionariosAsync(int pageNumber, int pageSize);
+    Task CreateAsync(FuncionarioModel funcionario);
+    Task UpdateAsync(FuncionarioModel funcionario);
+    Task DeleteAsync(int id);
 }
