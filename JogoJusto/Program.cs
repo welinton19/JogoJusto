@@ -6,19 +6,11 @@ using JogoJusto.Middleware;
 using JogoJusto.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-//#region Tratamento de erro global
-//builder.Services.AddTransient<ErrorHanddlerMiddleware>();
-//#endregion
-
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
 
 builder.Services.AddScoped<IAuthorizationHandler, RoleAuthorizationHandler>();
 
@@ -33,8 +25,6 @@ builder.Services.AddScoped<IMetaEsgRepository, MetaEsgRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
 
-//Services
-
 builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<IDesenvolvimentoService, DesenvolvimentoService>();
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
@@ -44,17 +34,9 @@ builder.Services.AddScoped<IMetaEsgService, MetaEsgService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
-
-
-
-
-
 #endregion
 
-#region configigurando autorizacao de papel
-
-builder.Services.AddScoped<TokenService, TokenService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+#region configurando autorizacao de papel
 
 builder.Services.AddAuthentication(options =>
 {

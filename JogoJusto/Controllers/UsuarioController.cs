@@ -1,5 +1,6 @@
-﻿using JogoJusto.AppDta;
-using JogoJusto.Models;
+﻿using JogoJusto.Pagination;
+using JogoJusto.Service;
+using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -8,38 +9,51 @@ namespace JogoJusto.Controllers;
 [Route("api/usuario")]
 public class UsuarioController : ControllerBase
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
+    private readonly IUsuarioService _service;
 
-    public UsuarioController(JogoJustoDbContext jogodbcontext)
+    public UsuarioController(IUsuarioService service)
     {
-        _jogodbcontext = jogodbcontext;
+        _service = service;
     }
 
     [HttpPost]
-    public IActionResult CriarUsuario([FromBody] UsuarioModel usuario)
+    public async Task<IActionResult> CriarUsuario([FromBody] UsuarioCreateViewModel usuario)
     {
-        _jogodbcontext.Usuario.Add(usuario);
-        _jogodbcontext.SaveChanges();
-        return CreatedAtAction(nameof(User), new { id = usuario.Id }, usuario);
+        await _service.CriarUsuario(usuario.Tipo, usuario.Email, usuario.Password);
+        return Ok("Usuário criado com sucesso.");
     }
 
-    [HttpPost]
-    [Route("login")]
-    public IActionResult Login([FromBody] UsuarioModel usuario)
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] UsuarioLoginViewModel usuario)
     {
-        var usuarioExistente = _jogodbcontext.Usuario
-            .FirstOrDefault(u => u.Email == usuario.Email && u.Password == usuario.Password);
-        if (usuarioExistente == null)
+        var loginResult = _service.AutenticarUsuario(usuario.Email, usuario.Password);
+
+        if (!loginResult)
         {
             return Unauthorized("Credenciais inválidas.");
         }
         return Ok("Login bem-sucedido.");
     }
 
+
+
     [HttpGet]
-    public IActionResult User()
+    public async Task<IActionResult> GetUsuarios([FromQuery] QueryParameters qp)
     {
-        var usuarios = _jogodbcontext.Usuario.ToList();
-        return Ok(usuarios);
+        var result = await _service.GetUsuariosAsync(qp.PageNumber, qp.PageSize);
+
+        string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+            : null;
+
+        result.PreviousPage = (qp.PageNumber > 1)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+            : null;
+
+        Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+
+        return Ok(result);
     }
 }

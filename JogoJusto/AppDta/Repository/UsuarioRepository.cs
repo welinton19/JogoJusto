@@ -1,4 +1,8 @@
-﻿namespace JogoJusto.AppDta.Repository;
+﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
+using Microsoft.EntityFrameworkCore;
+
+namespace JogoJusto.AppDta.Repository;
 
 public class UsuarioRepository : IUsuarioRepository
 {
@@ -9,18 +13,47 @@ public class UsuarioRepository : IUsuarioRepository
         this._jogoJustoDbContext = jogoJustoDbContext;
     }
 
-    void IUsuarioRepository.CriarUsuario(string email, string senha, string tipo)
+    public async Task CriarUsuarioAsync(string email, string senha, string tipo)
     {
-       _jogoJustoDbContext.Usuario.Add(new Models.UsuarioModel
-       {
-           Email = email,
-           Password = senha,
-           Tipo = tipo
-       });
+       await _jogoJustoDbContext.Usuario.AddAsync(new UsuarioModel
+        {
+            Email = email,
+            Password = senha,
+            Tipo = tipo
+        });
+
+        await _jogoJustoDbContext.SaveChangesAsync();
     }
 
-    void IUsuarioRepository.Login(string email, string senha)
+ 
+    public bool Login(string email, string senha)
     {
-        _jogoJustoDbContext.Usuario.FirstOrDefault(u => u.Email == email && u.Password == senha);
+        var usuarioExistente = _jogoJustoDbContext.Usuario
+            .FirstOrDefault(u => u.Email == email && u.Password == senha);
+        return usuarioExistente != null;
+    }
+
+
+    public async Task<PagedResult<UsuarioModel>> GetUsuariosAsync(int pageNumber, int pageSize)
+    {
+        var query = _jogoJustoDbContext.Usuario
+            .AsNoTracking()
+            .OrderBy(u => u.Id)
+            .AsQueryable();
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResult<UsuarioModel>
+        {
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalCount = total,
+            Items = items
+        };
     }
 }
