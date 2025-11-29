@@ -1,11 +1,12 @@
-﻿namespace JogoJusto.Service;
+﻿using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
+
+namespace JogoJusto.Service;
 
 public interface IUsuarioService
 {
-    void CriarUsuario(string tipo, string email, string senha);
+    Task CriarUsuario(string tipo, string email, string senha);
     bool AutenticarUsuario(string email, string senha);
 
-    void GetUsuario();
-
-
+    Task<PagedResult<UsuarioViewModel>> GetUsuariosAsync(int pageNumber, int pageSize);
 }

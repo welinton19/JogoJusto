@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JogoJusto.Controllers;
 
 [ApiController]
-[Route("api/meaesg")]
+[Route("api/metaesg")]
 public class MetaEsgController : ControllerBase
 {
     private readonly IMetaEsgService _metaEsgService;
@@ -27,21 +27,21 @@ public class MetaEsgController : ControllerBase
     {
         var metaModel = _mapper.Map<MetaEsgModel>(meta);
         _metaEsgService.CriarMetaEsg(metaModel);
-        return CreatedAtAction(nameof(GetMeaEsg), new { id = metaModel.IdMetaEsg }, metaModel);
+        return CreatedAtAction(nameof(GetMetaEsg), new { id = metaModel.IdMetaEsg }, metaModel);
     }
 
     [Authorize]
     [HttpGet]
-    public IActionResult GetMeaEsg()
+    public IActionResult GetMetaEsg()
     {
-        _metaEsgService.GetMeaEsg();
+        _metaEsgService.GetMetaEsg();
         return Ok();
     }
 
     [Authorize]
     [HttpPut("{id}")]
     [ValidateAntiForgeryToken]  
-    public IActionResult AtualizarMeaEsg([FromBody] MetaEsgModel meta)
+    public IActionResult AtualizarMetaEsg([FromBody] MetaEsgModel meta)
     {
         _metaEsgService.AtualizarMetaEsg(meta.IdMetaEsg, meta);
         return Ok();
@@ -49,7 +49,7 @@ public class MetaEsgController : ControllerBase
 
     [Authorize]
     [HttpDelete("{id}")]
-    public IActionResult DeleteMeaEsg(int id)
+    public IActionResult DeleteMetaEsg(int id)
     {
         _metaEsgService.DeletarMetaEsg(id);
         return Ok();

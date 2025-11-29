@@ -6,23 +6,18 @@ using JogoJusto.Middleware;
 using JogoJusto.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-//#region Tratamento de erro global
-//builder.Services.AddTransient<ErrorHanddlerMiddleware>();
-//#endregion
-
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
 builder.Services.AddScoped<IAuthorizationHandler, RoleAuthorizationHandler>();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> e9f058c72cc66c7740d97fda56ac8c157e6a6c2c
 #region service e repositorio
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
@@ -34,8 +29,6 @@ builder.Services.AddScoped<IMetaEsgRepository, MetaEsgRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
 
-//Services
-
 builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<IDesenvolvimentoService, DesenvolvimentoService>();
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
@@ -45,13 +38,9 @@ builder.Services.AddScoped<IMetaEsgService, MetaEsgService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
-
-
-
-
-
 #endregion
 
+<<<<<<< HEAD
 #region configigurando autorizacao de papel
 
 builder.Services.AddScoped<TokenService, TokenService>();
@@ -78,6 +67,10 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 >>>>>>> ad8a2cb6833c033c5941ef528eb45982475261d2
 
+=======
+#region configurando autorizacao de papel
+
+>>>>>>> e9f058c72cc66c7740d97fda56ac8c157e6a6c2c
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -1,9 +1,13 @@
-﻿namespace JogoJusto.AppDta.Repository;
+﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
+
+namespace JogoJusto.AppDta.Repository;
 
 public interface IUsuarioRepository
 {
-    void CriarUsuario( string email, string senha, string tipo);
-    void Login(string email, string senha);
-    //void Logout();
-   
+    Task CriarUsuarioAsync( string email, string senha, string tipo);
+    bool Login(string email, string senha);
+    
+    Task<PagedResult<UsuarioModel>> GetUsuariosAsync(int pageNumber, int pageSize);
+
 }

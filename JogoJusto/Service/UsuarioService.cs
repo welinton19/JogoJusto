@@ -1,36 +1,44 @@
-﻿using JogoJusto.AppDta;
+﻿using JogoJusto.AppDta.Repository;
+using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
 
 namespace JogoJusto.Service;
 
 public class UsuarioService : IUsuarioService
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
+    private readonly IUsuarioRepository _repo;
+    private readonly AutoMapper.IMapper _mapper;
 
-    public UsuarioService(JogoJustoDbContext jogodbcontext)
+    public UsuarioService(IUsuarioRepository repo, AutoMapper.IMapper mapper)
     {
-        _jogodbcontext = jogodbcontext;
+        _repo = repo;
+        _mapper = mapper;
     }
 
     public bool AutenticarUsuario(string email, string senha)
     {
-       var usuarioExistente = _jogodbcontext.Usuario
-            .FirstOrDefault(u => u.Email == email && u.Password == senha);
-        return usuarioExistente != null;
+        return _repo.Login(email, senha);
+
     }
 
-    public void CriarUsuario(string tipo, string email, string senha)
+    public async Task CriarUsuario(string tipo, string email, string senha)
     {
-        var novoUsuario = new Models.UsuarioModel
+        await _repo.CriarUsuarioAsync(email, senha, tipo);
+    }
+
+    public async Task<PagedResult<UsuarioViewModel>> GetUsuariosAsync(int pageNumber, int pageSize)
+    {
+        var paged = await _repo.GetUsuariosAsync(pageNumber, pageSize);
+
+        var vmItems = paged.Items.Select(u => _mapper.Map<UsuarioViewModel>(u));
+
+        return new PagedResult<UsuarioViewModel>
         {
-            Tipo = tipo,
-            Email = email,
-            Password = senha
-        };  
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            TotalCount = paged.TotalCount,
+            Items = vmItems
+        };
     }
 
-    public void GetUsuario()
-    {
-        var usuarios = _jogodbcontext.Usuario.ToList();
-
-    }
 }

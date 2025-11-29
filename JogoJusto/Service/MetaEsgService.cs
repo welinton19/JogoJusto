@@ -51,7 +51,7 @@ public class MetaEsgService : IMetaEsgService
         }
     }
 
-    public void GetMeaEsg()
+    public void GetMetaEsg()
     {
         var metas = _jogodbcontext.MetaEsg.ToList();
         foreach (var met in metas) 

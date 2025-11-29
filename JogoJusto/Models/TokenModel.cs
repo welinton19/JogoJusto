@@ -11,6 +11,7 @@ public class TokenModel
 
     [Key]
     [Column("ID_TOKEN")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string? Id { get; set; }
 
     [Column("TOKEN")]
