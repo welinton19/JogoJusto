@@ -1,37 +1,50 @@
-﻿using JogoJusto.AppDta;
+﻿using AutoMapper;
+using JogoJusto.AppDta.Repository;
+using JogoJusto.Pagination;
 using JogoJusto.ViewModel;
 
 namespace JogoJusto.Service;
 
 public class DepartamentoService : IDepartamentoService
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
+    private readonly IDepartamentoRepository _repo;
+    private readonly IMapper _mapper;
 
-    public DepartamentoService(JogoJustoDbContext jogodbcontext)
+    public DepartamentoService(IDepartamentoRepository repo, IMapper mapper)
     {
-        _jogodbcontext = jogodbcontext;
+        _repo = repo;
+        _mapper = mapper;
     }
 
-    public void CriarDepartamento(string nome)
+    public async Task UpdateAsync(DepartamentoUpdateViewModel vm)
     {
-        var departamento = new Models.DepartamentoModel
+        var existing = await _repo.GetByIdAsync(vm.IdDepartamento);
+        if (existing == null)
+            throw new Exception("Departamento não encontrado.");
+
+        _mapper.Map(vm, existing);
+        await _repo.UpdateAsync(existing);
+    }
+
+    public async Task<DepartamentoViewModel?> GetByIdAsync(int id)
+    {
+        var model = await _repo.GetByIdAsync(id);
+        return model == null ? null : _mapper.Map<DepartamentoViewModel>(model);
+    }
+
+    public async Task<PagedResult<DepartamentoViewModel>> GetAllAsync(int page, int size)
+    {
+        var paged = await _repo.GetAllAsync(page, size);
+
+        var vmItems = paged.Items.Select(_mapper.Map<DepartamentoViewModel>).ToList();
+
+        return new PagedResult<DepartamentoViewModel>
         {
-            NomeDepartamento = nome
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            TotalCount = paged.TotalCount,
+            Items = vmItems
         };
     }
-
-    public void GestarDepartamento(int nome)
-    {
-        var departamento = _jogodbcontext.Departamento.Find(nome);
-    }
-
-    public IEnumerable<DepartamentoViewModel> GetDepartamentos()
-    {
-        var departamentos = _jogodbcontext.Departamento.Select(d => new DepartamentoViewModel
-        {
-            IdDepartamento = d.IdDepartamento,
-            NomeDepartamento = d.NomeDepartamento
-        }).ToList();
-        return departamentos;
-    }
 }
+

@@ -11,8 +11,6 @@ public class MappingProfile : AutoMapper.Profile
 
         CreateMap<Models.MetaEsgModel, ViewModel.MetaEsgViewModel>().ReverseMap();
 
-        CreateMap<Models.DepartamentoModel, ViewModel.DepartamentoViewModel>().ReverseMap();
-
         CreateMap<Models.DesenvolvimentoModel, ViewModel.DesenvolvimentoViewModel>().ReverseMap();
 
         CreateMap<Models.EsgLogModel, ViewModel.EsgLogViewModel>().ReverseMap();
@@ -33,6 +31,7 @@ public class MappingProfile : AutoMapper.Profile
                });
            });
 
+        CreateMap<EmpresaModel, EmpresaViewModel>();
         CreateMap<EmpresaCreateViewModel, EmpresaModel>();
         CreateMap<EmpresaUpdateViewModel, EmpresaModel>()
             .ForAllMembers(opts =>
@@ -45,11 +44,28 @@ public class MappingProfile : AutoMapper.Profile
                     return srcMember != null;
                 });
             });
+            
+        CreateMap<DepartamentoModel, DepartamentoViewModel>();
+        CreateMap<DepartamentoUpdateViewModel, DepartamentoModel>()
+           .ForAllMembers(opts =>
+           {
+                opts.Condition((src, dest, srcMember) =>
+                {
+                    if (srcMember is string s && string.IsNullOrWhiteSpace(s))
+                       return false;
 
-        CreateMap<EmpresaModel, EmpresaViewModel>();
+                    return srcMember != null;
+                });
+           });
+
+
+
+
 
 
     }
+
+
 
 
 
