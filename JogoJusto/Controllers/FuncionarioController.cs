@@ -1,65 +1,75 @@
-﻿using AutoMapper;
-using JogoJusto.AppDta;
-using JogoJusto.Models;
+﻿using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
 
 [ApiController]
 [Route("api/funcionario")]
-public class FuncionarioController: ControllerBase
+public class FuncionarioController : ControllerBase
 {
-    private readonly IFuncionarioService _funcionarioService;
-    private readonly IMapper _mapper;
 
-    public FuncionarioController(IFuncionarioService funcionarioService, IMapper mapper)
+    private readonly IFuncionarioService _service;
+
+    public FuncionarioController(IFuncionarioService service)
     {
-        _funcionarioService = funcionarioService;
-        _mapper = mapper;
+        _service = service;
     }
 
-    [Authorize]
+
     [HttpPost]
-    public IActionResult CriarFuncionario([FromBody] FuncionarioViewModel funcionario)
+    public async Task<IActionResult> Criar([FromBody] JogoJusto.ViewModel.FuncionarioCreateViewModel vm)
     {
-       _funcionarioService.CriarFuncionario(funcionario);
-        return CreatedAtAction(nameof(GetFuncionarioPorId), new { id = funcionario.FuncionarioId }, funcionario);
-
-
+        await _service.CreateAsync(vm);
+        return Ok("Funcionário criado com sucesso.");
     }
 
-    [Authorize]
     [HttpPut("{id}")]
-    public IActionResult AtualizarFuncionario([FromBody] FuncionarioViewModel funcionario)
+    public async Task<IActionResult> Atualizar(int id, [FromBody] FuncionarioUpdateViewModel vm)
     {
-        _funcionarioService.AtualizarFuncionario(funcionario);
-        return Ok(funcionario);
+        if (id != vm.FuncionarioId)
+            return BadRequest("Id do funcionario divergente.");
+
+        await _service.UpdateAsync(vm);
+        return Ok("Funcionário atualizado com sucesso.");
     }
 
-    [Authorize]
     [HttpGet]
-    public IActionResult GetFuncionarios()
+    public async Task<IActionResult> GetFuncionarios([FromQuery] QueryParameters qp)
     {
-        _funcionarioService.GetFuncionarios();
-        return Ok();
+        var result = await _service.GetFuncionariosAsync(qp.PageNumber, qp.PageSize);
+
+        string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+            : null;
+
+        result.PreviousPage = (qp.PageNumber > 1)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+            : null;
+
+        Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+
+        return Ok(result);
     }
 
-    [Authorize]
     [HttpGet("{id}")]
-    public IActionResult GetFuncionarioPorId(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        _funcionarioService.GetFuncionarioPorId(id);
-        return Ok();
+        var func = await _service.GetByIdAsync(id);
+
+        if (func == null)
+            return NotFound("Funcionário não encontrado.");
+
+        return Ok(func);
     }
 
-    [Authorize]
     [HttpDelete("{id}")]
-    public IActionResult DeletarFuncionario(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        _funcionarioService.DeletarFuncionario(id);
-        return Ok();
+        await _service.DeleteAsync(id);
+        return Ok("Funcionário removido com sucesso.");
     }
 }

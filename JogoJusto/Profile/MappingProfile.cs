@@ -1,4 +1,7 @@
-﻿namespace JogoJusto.Profile;
+﻿using JogoJusto.Models;
+using JogoJusto.ViewModel;
+
+namespace JogoJusto.Profile;
 
 public class MappingProfile : AutoMapper.Profile
 {
@@ -18,7 +21,6 @@ public class MappingProfile : AutoMapper.Profile
 
         CreateMap<Models.FuncionarioModel, ViewModel.FuncionarioViewModel>().ReverseMap();
 
-        
     }
 
 

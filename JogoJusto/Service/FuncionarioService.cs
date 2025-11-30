@@ -1,70 +1,63 @@
-﻿using JogoJusto.AppDta;
+﻿using AutoMapper;
+using JogoJusto.AppDta.Repository;
+using JogoJusto.Models;
+using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
 
 namespace JogoJusto.Service;
 
 public class FuncionarioService : IFuncionarioService
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
+    private readonly IFuncionarioRepository _repo;
+    private readonly IMapper _mapper;
 
-    public FuncionarioService(JogoJustoDbContext jogodbcontext)
+    public FuncionarioService(IFuncionarioRepository repo, IMapper mapper)
     {
-        _jogodbcontext = jogodbcontext;
+        _repo = repo;
+        _mapper = mapper;
     }
 
-    public void AtualizarFuncionario(object funcionario)
+    public async Task CreateAsync(FuncionarioCreateViewModel vm)
     {
-        var func = funcionario as Models.FuncionarioModel;
-        if (func != null)
+        var model = _mapper.Map<FuncionarioModel>(vm);
+        await _repo.CreateAsync(model);
+    }
+
+    public async Task UpdateAsync(FuncionarioUpdateViewModel vm)
+    {
+        var existing = await _repo.GetByIdAsync(vm.FuncionarioId);
+
+        if (existing == null)
+            throw new Exception("Funcionário não encontrado.");
+
+        _mapper.Map(vm, existing);
+
+        await _repo.UpdateAsync(existing);
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        await _repo.DeleteAsync(id);
+    }
+
+    public async Task<FuncionarioViewModel?> GetByIdAsync(int id)
+    {
+        var model = await _repo.GetByIdAsync(id);
+        return model == null ? null : _mapper.Map<FuncionarioViewModel>(model);
+    }
+
+    public async Task<PagedResult<FuncionarioViewModel>> GetFuncionariosAsync(int page, int size)
+    {
+        var paged = await _repo.GetFuncionariosAsync(page, size);
+
+        var vmItems = paged.Items.Select(f => _mapper.Map<FuncionarioViewModel>(f));
+
+        return new PagedResult<FuncionarioViewModel>
         {
-            {   
-                var funcionarioExistente = _jogodbcontext.Funcionario.Find(func.FuncionarioId);
-                if (funcionarioExistente != null)
-                {
-                    funcionarioExistente.Nome = func.Nome;
-                    funcionarioExistente.DataNascimento = func.DataNascimento;
-                    funcionarioExistente.Genero = func.Genero;
-                    funcionarioExistente.Cargo = func.Cargo;
-                    funcionarioExistente.DataContratacao = func.DataContratacao;
-                    funcionarioExistente.Raca = func.Raca;
-                    funcionarioExistente.StPcd = func.StPcd;
-                    funcionarioExistente.TipoPcd = func.TipoPcd;
-                    funcionarioExistente.Cpf = func.Cpf;
-                    funcionarioExistente.CargaHoraria = func.CargaHoraria;
-                    funcionarioExistente.DescricaoCargaHoraria = func.DescricaoCargaHoraria;
-                    funcionarioExistente.Salario = func.Salario;
-                    
-                    _jogodbcontext.SaveChanges();
-                }
-            }
-        }
-    }
-
-    public void CriarFuncionario(object funcionario)
-    {
-        var func = funcionario as Models.FuncionarioModel;
-    }
-
-    public void DeletarFuncionario(int id)
-    {
-        var funcionario = _jogodbcontext.Funcionario.Find(id);
-    }
-
-    public object GetFuncionarioPorId(int id)
-    {
-        var funcionario = _jogodbcontext.Funcionario.Find(id);
-        return funcionario;
-    }
-
-    public object GetFuncionarios()
-    {
-        var funcionarios = _jogodbcontext.Funcionario.ToList();
-        foreach (var func in funcionarios) 
-        {
-            func.Mentor = null;
-            func.Mentorados = null;
-            func.Departamento = null;
-            func.Desenvolvimentos = null;
-        }
-        return funcionarios;
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            TotalCount = paged.TotalCount,
+            Items = vmItems
+        };
     }
 }

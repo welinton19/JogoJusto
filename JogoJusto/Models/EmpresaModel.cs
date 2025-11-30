@@ -18,7 +18,7 @@ public class EmpresaModel
 
     [Required]
     [MaxLength(15)]
-    [Column("NR_INSC_EST")]
+    [Column("NR_INSCRI_EST")]
     public string InscricaoEstadual { get; set; } = string.Empty;
 
     [Required]

@@ -11,33 +11,30 @@ public class FuncionarioModel
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int FuncionarioId { get; set; }
 
-    [Required]
     [MaxLength(100)]
     [Column("NM_FUNC")]
-    public string Nome { get; set; } = string.Empty;
+    public string? Nome { get; set; } = string.Empty;
 
-    [Required]
     [Column("DT_NASC_FUN", TypeName ="DATE")]
-    public DateTime DataNascimento { get; set; }
+    public DateTime? DataNascimento { get; set; }
 
-    [Required]
+   
     [MaxLength(30)]
     [Column("GENERO_FUN")]
-    public string Genero { get; set; } = string.Empty;
+    public string? Genero { get; set; } = string.Empty;
 
-    [Required]
+
     [MaxLength(50)]
     [Column("CARGO_FUN")]
-    public string Cargo { get; set; } = string.Empty;
+    public string? Cargo { get; set; } = string.Empty;
 
-    [Required]
+   
     [Column("DT_ADMISSAO",TypeName = "DATE")]
-    public DateTime DataContratacao { get; set; }
+    public DateTime? DataContratacao { get; set; }
 
-    [Required]
     [MaxLength(50)]
     [Column("COR_FUN")]
-    public string Raca { get; set; } = string.Empty;
+    public string? Raca { get; set; } = string.Empty;
 
     [Required]
     [Column("ST_PCD", TypeName = "CHAR(1)")]
@@ -45,22 +42,19 @@ public class FuncionarioModel
 
     [MaxLength(100)]
     [Column("TIPO_PCD")]
-    public string TipoPcd { get; set; } = string.Empty;
+    public string? TipoPcd { get; set; } = string.Empty;
 
-    [Required]
+  
     [MaxLength(16)]
     [Column("NR_CPF")]
-    public string Cpf { get; set; } = string.Empty;
-    public string CargaHoraria { get; set; } = string.Empty;
-    public string DescricaoCargaHoraria { get; set; } = string.Empty;
-
-    [Required]
+    public string? Cpf { get; set; } = string.Empty;
+    
     [Column("SAL_BASE", TypeName = "NUMBER(10,2)")]
-    public decimal Salario { get; set; }
+    public decimal? Salario { get; set; }
 
-    [Required]
+    
     [Column("T_DEPTO_ID_DEPTO")]
-    public int DepartamentoId { get; set; }
+    public int? DepartamentoId { get; set; }
 
 
     [Column("MENTOR_ID")]
@@ -74,7 +68,7 @@ public class FuncionarioModel
     public List<FuncionarioModel> Mentorados { get; set; } = new List<FuncionarioModel>();
 
     [ForeignKey("DepartamentoId")]
-    public DepartamentoModel Departamento { get; set; } = new DepartamentoModel();
+    public DepartamentoModel? Departamento { get; set; } 
 
     [InverseProperty("Funcionario")]
     public List<DesenvolvimentoModel> Desenvolvimentos { get; set; } = new List<DesenvolvimentoModel>();

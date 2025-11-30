@@ -1,11 +1,13 @@
-﻿namespace JogoJusto.Service;
+﻿using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
+
+namespace JogoJusto.Service;
 
 public interface IFuncionarioService
 {
-    void CriarFuncionario(object funcionario);
-    object GetFuncionarios();
-    object GetFuncionarioPorId(int id);
-    void AtualizarFuncionario(object funcionario);
-    
-    void DeletarFuncionario(int id);
+    Task<FuncionarioViewModel?> GetByIdAsync(int id);
+    Task<PagedResult<FuncionarioViewModel>> GetFuncionariosAsync(int page, int size);
+    Task CreateAsync(FuncionarioCreateViewModel vm);
+    Task UpdateAsync(FuncionarioUpdateViewModel vm);
+    Task DeleteAsync(int id);
 }
