@@ -1,43 +1,69 @@
-﻿using JogoJusto.Models;
+﻿using JogoJusto.AppDta;
+using JogoJusto.AppDta.Repository;
+using JogoJusto.Models;
+using JogoJusto.Pagination;
+using Microsoft.EntityFrameworkCore;
 
-namespace JogoJusto.AppDta.Repository
+public class MetaEsgRepository : IMetaEsgRepository
 {
-    public class MetaEsgRepository : IMetaEsgRepository
+    private readonly JogoJustoDbContext _context;
+
+    public MetaEsgRepository(JogoJustoDbContext context)
     {
-        private readonly JogoJustoDbContext _jogodbcontext;
+        _context = context;
+    }
 
-        public MetaEsgRepository(JogoJustoDbContext jogodbcontext)
-        {
-            _jogodbcontext = jogodbcontext;
-        }
+    public async Task CreateAsync(MetaEsgModel meta)
+    {
+        await _context.MetaEsg.AddAsync(meta);
+        await _context.SaveChangesAsync();
+    }
 
-        public void AtualizarMetaEsg(MetaEsgModel meta)
-        {
-            _jogodbcontext.MetaEsg.Update(meta);
-            _jogodbcontext.SaveChanges();
-        }
+    public async Task UpdateAsync(MetaEsgModel meta)
+    {
+        _context.MetaEsg.Update(meta);
+        await _context.SaveChangesAsync();
+    }
 
-        public void CriarMetaEsg(MetaEsgModel meta)
-        {
-            _jogodbcontext.MetaEsg.Add(meta);
-            _jogodbcontext.SaveChanges();
-        }
+    public async Task<MetaEsgModel?> GetByIdAsync(int id)
+    {
+        return await _context.MetaEsg
+            .Where(m => m.IdMetaEsg == id && m.StatusRegistro == "Ativo")
+            .FirstOrDefaultAsync();
+    }
 
-        public void DeletarMetaEsg(int id)
-        {
-            _jogodbcontext.MetaEsg.Remove(new MetaEsgModel { IdMetaEsg = id });
-        }
+    public async Task<PagedResult<MetaEsgModel>> GetAllAsync(int page, int size)
+    {
+        var query = _context.MetaEsg
+            .Where(m => m.StatusRegistro == "Ativo")
+            .OrderBy(m => m.IdMetaEsg);
 
-        public MetaEsgModel? ObterMetaEsgPorId(int id)
-        {
-            _jogodbcontext.MetaEsg.Find(id);
-            return null;
-        }
+        var total = await query.CountAsync();
 
-        public IEnumerable<MetaEsgModel> ObterTodasMetasEsg()
+        var items = await query
+            .Skip((page - 1) * size)
+            .Take(size)
+            .ToListAsync();
+
+        return new PagedResult<MetaEsgModel>
         {
-            _jogodbcontext.MetaEsg.ToList();
-            return Enumerable.Empty<MetaEsgModel>();
+            Items = items,
+            PageNumber = page,
+            PageSize = size,
+            TotalCount = total
+        };
+    }
+
+    public async Task SoftDeleteAsync(int id)
+    {
+        var entity = await _context.MetaEsg.FindAsync(id);
+        if (entity != null)
+        {
+            entity.StatusRegistro = "Inativo";
+            entity.AtualizacaoDados = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
         }
     }
 }
+

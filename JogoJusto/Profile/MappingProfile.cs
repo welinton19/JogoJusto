@@ -9,8 +9,6 @@ public class MappingProfile : AutoMapper.Profile
     {
         CreateMap<Models.UsuarioModel, ViewModel.UsuarioViewModel>().ReverseMap();
 
-        CreateMap<Models.MetaEsgModel, ViewModel.MetaEsgViewModel>().ReverseMap();
-
         CreateMap<Models.EsgLogModel, ViewModel.EsgLogViewModel>().ReverseMap();
 
         CreateMap<Models.TokenModel, ViewModel.TokenViewModel>().ReverseMap();
@@ -70,7 +68,18 @@ public class MappingProfile : AutoMapper.Profile
                 });
             });
 
-       
+        CreateMap<MetaEsgModel, MetaEsgViewModel>().ReverseMap();
+        CreateMap<MetaEsgCreateViewModel, MetaEsgModel>();
+        CreateMap<MetaEsgUpdateViewModel, MetaEsgModel>()
+            .ForAllMembers(opts =>
+            {
+                opts.Condition((src, dest, srcMember) =>
+                {
+                    if (srcMember is string s && string.IsNullOrWhiteSpace(s))
+                        return false;
+                    return srcMember != null;
+                });
+            });
 
 
 

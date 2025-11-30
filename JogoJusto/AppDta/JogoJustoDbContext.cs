@@ -71,7 +71,7 @@ public class JogoJustoDbContext : DbContext
 
         modelBuilder.Entity<MetaEsgModel>(entity =>
         {
-            entity.ToTable("T_META_ESG");
+            entity.ToTable("T_METAS_ESG");
 
             entity.Property(e => e.ValorReferenciaMetaEsg)
                 .HasColumnType("NUMBER(5,2)")

@@ -24,11 +24,11 @@ public class MetaEsgModel
     public decimal ValorReferenciaMetaEsg { get; set; }
 
     [Column("VL_ATUAL", TypeName = "NUMBER(5,2)")]
-    public decimal ValorAtualMetaEsg { get; set; }
+    public decimal? ValorAtualMetaEsg { get; set; }
 
 
     [Column("DT_ATUALIZACAO", TypeName = "DATE")]
-    public DateTime AtualizacaoDados { get; set; }
+    public DateTime? AtualizacaoDados { get; set; }
 
     [Required]
     [Column("PRAZO_META", TypeName = "DATE")]
@@ -37,7 +37,9 @@ public class MetaEsgModel
     [Column("T_EMPRESA_ID_EMPRESA")]
     public int? EmpresaId { get; set; }
 
-
     [ForeignKey("EmpresaId")]
     public EmpresaModel? Empresa { get; set; }
+
+    [Column("ST_REGISTRO")]
+    public string? StatusRegistro { get; set; } = "Ativo";
 }
