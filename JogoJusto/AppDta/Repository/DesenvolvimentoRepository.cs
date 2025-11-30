@@ -1,48 +1,67 @@
 ﻿using JogoJusto.Models;
-using Microsoft.AspNetCore.Mvc;
+using JogoJusto.Pagination;
+using Microsoft.EntityFrameworkCore;
 
 namespace JogoJusto.AppDta.Repository;
 
 public class DesenvolvimentoRepository : IDesenvolvimentoRepository
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
+    private readonly JogoJustoDbContext _context;
 
-    public DesenvolvimentoRepository(JogoJustoDbContext jogodbcontext)
+    public DesenvolvimentoRepository(JogoJustoDbContext context)
     {
-        _jogodbcontext = jogodbcontext;
+        _context = context;
     }
 
-    public void AtualizarDesenvolvimento(DesenvolvimentoModel desenvolvimento)
+    public async Task CreateAsync(DesenvolvimentoModel model)
     {
-        _jogodbcontext.Desenvolvimento.Update(desenvolvimento);
-        _jogodbcontext.SaveChanges();
-
+        await _context.Desenvolvimento.AddAsync(model);
+        await _context.SaveChangesAsync();
     }
 
-    public void CriarDesenvolvimento(DesenvolvimentoModel desenvolvimento)
+    public async Task UpdateAsync(DesenvolvimentoModel model)
     {
-        _jogodbcontext.Desenvolvimento.Add(desenvolvimento);
-        _jogodbcontext.SaveChanges();
-
+        _context.Desenvolvimento.Update(model);
+        await _context.SaveChangesAsync();
     }
 
-    public void DeletarDesenvolvimento(int id)
+    public async Task DeleteAsync(int id)
     {
-        var desenvolvimento = _jogodbcontext.Desenvolvimento.Find(id);
-        if (desenvolvimento != null)
+        var dev = await GetByIdAsync(id);
+        if (dev != null)
         {
-            _jogodbcontext.Desenvolvimento.Remove(desenvolvimento);
-            _jogodbcontext.SaveChanges();
+            _context.Desenvolvimento.Remove(dev);
+            await _context.SaveChangesAsync();
         }
     }
 
-    public DesenvolvimentoModel? GetDesenvolvimentoPorId(int id)
+    public async Task<DesenvolvimentoModel?> GetByIdAsync(int id)
     {
-        return _jogodbcontext.Desenvolvimento.Find(id);
+        return await _context.Desenvolvimento
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.IdDesenvolvimento == id);
     }
 
-    public IEnumerable<DesenvolvimentoModel> GetDesenvolvimentos()
+    public async Task<PagedResult<DesenvolvimentoModel>> GetAllAsync(int page, int size)
     {
-        return _jogodbcontext.Desenvolvimento.ToList();
+        var query = _context.Desenvolvimento
+            .AsNoTracking()
+            .OrderBy(x => x.IdDesenvolvimento);
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .Skip((page - 1) * size)
+            .Take(size)
+            .ToListAsync();
+
+        return new PagedResult<DesenvolvimentoModel>
+        {
+            Items = items,
+            PageNumber = page,
+            PageSize = size,
+            TotalCount = total
+        };
     }
 }
+

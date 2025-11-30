@@ -1,13 +1,13 @@
-﻿namespace JogoJusto.AppDta.Repository;
+﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
+
+namespace JogoJusto.AppDta.Repository;
 
 public interface IDesenvolvimentoRepository
 {
-    void CriarDesenvolvimento(Models.DesenvolvimentoModel desenvolvimento);
-
-    void AtualizarDesenvolvimento(Models.DesenvolvimentoModel desenvolvimento);
-
-    Models.DesenvolvimentoModel? GetDesenvolvimentoPorId(int id);
-
-    IEnumerable<Models.DesenvolvimentoModel> GetDesenvolvimentos();
-    void DeletarDesenvolvimento(int id);
+    Task<DesenvolvimentoModel?> GetByIdAsync(int id);
+    Task<PagedResult<DesenvolvimentoModel>> GetAllAsync(int page, int size);
+    Task CreateAsync(DesenvolvimentoModel model);
+    Task UpdateAsync(DesenvolvimentoModel model);
+    Task DeleteAsync(int id);
 }
