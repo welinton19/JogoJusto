@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using JogoJusto.AppDta;
-using JogoJusto.Models;
+﻿using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -12,52 +9,62 @@ namespace JogoJusto.Controllers;
 [Route("api/empresa")]
 public class EmpresaController : ControllerBase
 {
-    private readonly IEmpresaService _empresaService;
-    private readonly IMapper _mapper;
+    private readonly IEmpresaService _service;
 
-    public EmpresaController(IEmpresaService empresaService, IMapper mapper)
+    public EmpresaController(IEmpresaService service)
     {
-        _empresaService = empresaService;
-        _mapper = mapper;
+        _service = service;
     }
 
-    [Authorize]
     [HttpPost]
-    public IActionResult CriarEmpresa([FromBody] EmpresaViewModel empresa)
+    public async Task<IActionResult> Criar([FromBody] EmpresaCreateViewModel vm)
     {
-        _empresaService.CriarEmpresa(empresa.Nome);
-        return CreatedAtAction(nameof(GetEmpresaPorId), new { id = empresa.EmpresaId }, empresa);
-
+        await _service.CreateAsync(vm);
+        return Ok("Empresa criada com sucesso.");
     }
 
-    [Authorize]
-    [HttpPut]
-    public IActionResult AtualizarEmpresa([FromBody] EmpresaViewModel empresa)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Atualizar(int id, [FromBody] EmpresaUpdateViewModel vm)
     {
-        var empresaModel = _mapper.Map<EmpresaModel>(empresa);
-        return Ok(empresaModel);
+        if (id != vm.EmpresaId)
+            return BadRequest("Id divergente.");
+
+        await _service.UpdateAsync(vm);
+        return Ok("Empresa atualizada com sucesso.");
     }
 
-    [Authorize]
-    [HttpGet]
-    public IActionResult GetEmpresas()
-    {
-        var empresas = _empresaService.GetType();
-        return Ok(empresas);
-    }
-
-    [Authorize]
     [HttpGet("{id}")]
-    public IActionResult GetEmpresaPorId(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var empresa = _empresaService.Get(id);
-        return Ok(empresa);
+        var empresa = await _service.GetByIdAsync(id);
+
+        return empresa == null ? NotFound("Empresa não encontrada.") : Ok(empresa);
     }
-    [Authorize]
-    [HttpDelete("{id}")]
-    public IActionResult DeletarEmpresa(int id)
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
     {
-        var empresa = _empresaService.Get(id);
-        return Ok(empresa);
+        var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);
+
+    string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+    result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+        ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+        : null;
+
+    result.PreviousPage = (qp.PageNumber > 1)
+        ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+        : null;
+
+    Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+
+    return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok("Empresa removida com sucesso.");
     }
 }

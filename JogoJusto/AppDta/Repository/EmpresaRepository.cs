@@ -1,4 +1,6 @@
 ﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
+using Microsoft.EntityFrameworkCore;
 
 namespace JogoJusto.AppDta.Repository;
 
@@ -12,41 +14,62 @@ public class EmpresaRepository : IEmpresaRepository
         _jogodbcontext = jogodbcontext;
     }
 
-    public void AtualizarEmpresa(EmpresaModel empresa)
+    public async Task CreateAsync(EmpresaModel empresa)
+    {
+        await _jogodbcontext.Empresa.AddAsync(empresa);
+        await _jogodbcontext.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(EmpresaModel empresa)
     {
         _jogodbcontext.Empresa.Update(empresa);
-        _jogodbcontext.SaveChanges();
-
+        await _jogodbcontext.SaveChangesAsync();
     }
 
-    public void CriarEmpresa(EmpresaModel empresa)
+    public async Task DeleteAsync(int id)
     {
-        _jogodbcontext.Empresa.Add(empresa);
-        _jogodbcontext.SaveChanges();
-    }
-
-    public void DeletarEmpresa(int id)
-    {
-        _jogodbcontext.Empresa.Remove(new EmpresaModel { EmpresaId = id });
-    }
-
-    public EmpresaModel GetEmpresaPorId(int id)
-    {
-        if (id > 0)
+        var entity = await GetByIdAsync(id);
+        if (entity != null)
         {
-            var empresa = _jogodbcontext.Empresa.Find(id);
-            if (empresa != null)
-            {
-                return empresa;
-            }
+            _jogodbcontext.Empresa.Remove(entity);
+            await _jogodbcontext.SaveChangesAsync();
         }
-        throw new InvalidOperationException("Empresa não encontrada para o id informado.");
     }
 
-    public void GetEmpresas()
+    public async Task<EmpresaModel?> GetByIdAsync(int id)
     {
-        _jogodbcontext.Empresa.ToList();
+        return await _jogodbcontext.Empresa.FirstOrDefaultAsync(e => e.EmpresaId == id);
+    }
 
+    public async Task<PagedResult<EmpresaModel>> GetAllAsync(int pageNumber, int pageSize)
+    {
+        var query = _jogodbcontext.Empresa
+       .AsNoTracking()
+       .OrderBy(e => e.EmpresaId);
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(e => new EmpresaModel
+            {
+                EmpresaId = e.EmpresaId,
+                Cnpj = e.Cnpj,
+                InscricaoEstadual = e.InscricaoEstadual,
+                Nome = e.Nome,
+                Endereco = e.Endereco,
+                Telefone = e.Telefone
+            })
+            .ToListAsync();
+
+        return new PagedResult<EmpresaModel>
+        {
+            Items = items,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalCount = total
+        };
 
     }
 }
