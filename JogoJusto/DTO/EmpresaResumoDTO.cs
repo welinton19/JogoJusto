@@ -24,7 +24,7 @@ public class EmpresaResumoDTO
                 TotalFuncionarios = jogoJustoDbContext.Funcionario.Count(f => f.Departamento.EmpresaId == empresa.EmpresaId),
                 TotalDepartamentos = jogoJustoDbContext.Departamento.Count(d => d.EmpresaId == empresa.EmpresaId),
                 MediaScoreESG = empresa.MetasEsg.Any() ? (int)empresa.MetasEsg.Average(m => m.ValorAtualMetaEsg) : 0,
-                ScoreEsg = empresa.MetasEsg.Any() ? empresa.MetasEsg.Average(m => m.ValorAtualMetaEsg) : 0
+                ScoreEsg = (decimal)(empresa.MetasEsg.Any() ? empresa.MetasEsg.Average(m => m.ValorAtualMetaEsg) : 0)
             };
             return resumo;
         }
