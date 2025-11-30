@@ -42,10 +42,7 @@ public class JogoJustoDbContext : DbContext
             entity.ToTable("T_USUARIO");
         });
 
-        modelBuilder.Entity<TokenModel>(entity =>
-        {
-            entity.ToTable("T_TOKENS");
-        });
+        
 
         modelBuilder.Entity<DepartamentoModel>(entity =>
         {
@@ -106,6 +103,6 @@ public class JogoJustoDbContext : DbContext
     public virtual DbSet<MetaEsgModel> MetaEsg { get; set; }
     public virtual DbSet<EsgLogModel> EsgLogModel { get; set; }
 
-    public virtual DbSet<TokenModel> Tokem { get; set; }
+   
 }
 

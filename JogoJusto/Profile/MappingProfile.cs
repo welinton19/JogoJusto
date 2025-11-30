@@ -11,7 +11,7 @@ public class MappingProfile : AutoMapper.Profile
 
         CreateMap<Models.EsgLogModel, ViewModel.EsgLogViewModel>().ReverseMap();
 
-        CreateMap<Models.TokenModel, ViewModel.TokenViewModel>().ReverseMap();
+        //CreateMap<Models.TokenModel, ViewModel.TokenViewModel>().ReverseMap();
 
         CreateMap<FuncionarioModel, FuncionarioViewModel>().ReverseMap();
         CreateMap<FuncionarioCreateViewModel, FuncionarioModel>();

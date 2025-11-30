@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using JogoJusto.AppDta.Repository;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JogoJusto.Models;
@@ -6,6 +7,11 @@ namespace JogoJusto.Models;
 [Table("T_USUARIO")]
 public class UsuarioModel
 {
+   
+
+
+   
+
     [Key]
     [Column("ID_USUARIO")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -21,4 +27,10 @@ public class UsuarioModel
 
     [Column("TIPO")]
     public string Tipo { get; set; } = string.Empty;
+
+    
+   
+
+    
 }
+

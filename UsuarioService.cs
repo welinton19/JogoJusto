@@ -1,5 +1,5 @@
-ï»¿using JogoJusto.AppDta.Repository;
-using JogoJusto.Models;
+JogoJusto\Service\UsuarioService.cs
+using JogoJusto.AppDta.Repository;
 using JogoJusto.Pagination;
 using JogoJusto.ViewModel;
 
@@ -9,19 +9,32 @@ public class UsuarioService : IUsuarioService
 {
     private readonly IUsuarioRepository _repo;
     private readonly AutoMapper.IMapper _mapper;
+    private readonly ITokenService _tokenService;
 
-    public UsuarioService(IUsuarioRepository repo, AutoMapper.IMapper mapper)
+    public UsuarioService(IUsuarioRepository repo, AutoMapper.IMapper mapper, ITokenService tokenService)
     {
         _repo = repo;
         _mapper = mapper;
+        _tokenService = tokenService;
     }
 
-    public object AutenticarUsuario(string email, string password)
+    public bool AutenticarUsuario(string email, string senha)
     {
-        var usuario = _repo.AutenticarUsuario(email, password);
+        return _repo.Login(email, senha);
+    }
+
+    public async Task<string?> AutenticarEGerarTokenAsync(string email, string senha)
+    {
+        var valid = _repo.Login(email, senha);
+        if (!valid)
+            return null;
+
+        var usuario = await _repo.GetByEmailAsync(email);
         if (usuario == null)
             return null;
-        return usuario;
+
+        // Usa o ITokenService já existente para gerar o token.
+        return _tokenService.CreateToken(usuario.Id, usuario.Email);
     }
 
     public async Task CriarUsuario(string tipo, string email, string senha)

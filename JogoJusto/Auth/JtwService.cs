@@ -1,26 +1,55 @@
-﻿namespace JogoJusto.Auth;
+﻿using JogoJusto.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
-public class JtwService(string secretKey, string jwtSecret)
+namespace JogoJusto.Auth;
+
+public class JwtService
 {
-    private readonly string _jwtSecret = jwtSecret;
+    private readonly IConfiguration _config;
 
-    public string GenerateToken(string userId, string role)
+    public JwtService(IConfiguration config)
     {
-        var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-        var key = System.Text.Encoding.ASCII.GetBytes(_jwtSecret);
-        var tokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor
+        _config = config;
+    }
+
+    public (string Token, DateTime ExpiraEm) GerarToken(UsuarioModel usuario)
+    {
+        var secretKey = _config["JwtSettings:SecretKey"];
+        var issuer = _config["JwtSettings:Issuer"];
+        var audience = _config["JwtSettings:Audience"];
+        var expiryMinutes = int.Parse(_config["JwtSettings:ExpiryMinutes"]);
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var expira = DateTime.UtcNow.AddMinutes(expiryMinutes);
+
+        var claims = new[]
         {
-            Subject = new System.Security.Claims.ClaimsIdentity(new[]
-            {
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, userId),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, role)
-            }),
-            Expires = DateTime.UtcNow.AddHours(1),
-            SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
-                new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
-                Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature)
+            new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
+            new Claim("tipo", usuario.Tipo)
         };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
+
+        var token = new JwtSecurityToken(
+            issuer,
+            audience,
+            claims,
+            expires: expira,
+            signingCredentials: creds
+        );
+
+        string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return (tokenString, expira);
+    }
+
+    internal object GerarToken(bool usuarioAutenticado)
+    {
+        var token = new JwtSecurityToken();
+        string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+        return token;
     }
 }

@@ -1,4 +1,5 @@
-﻿using JogoJusto.Models;
+JogoJusto\AppDta\Repository\UsuarioRepository.cs
+using JogoJusto.Models;
 using JogoJusto.Pagination;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,26 +14,32 @@ public class UsuarioRepository : IUsuarioRepository
         this._jogoJustoDbContext = jogoJustoDbContext;
     }
 
-    public UsuarioModel? AutenticarUsuario(string email, string senha)
+    public async Task CriarUsuarioAsync(string email, string senha, string tipo)
     {
-        return _jogoJustoDbContext.Usuario
-            .AsNoTracking()
+       await _jogoJustoDbContext.Usuario.AddAsync(new UsuarioModel
+        {
+            Email = email,
+            Password = senha,
+            Tipo = tipo
+        });
+
+        await _jogoJustoDbContext.SaveChangesAsync();
+    }
+
+ 
+    public bool Login(string email, string senha)
+    {
+        var usuarioExistente = _jogoJustoDbContext.Usuario
             .FirstOrDefault(u => u.Email == email && u.Password == senha);
+        return usuarioExistente != null;
     }
 
-    public async Task CriarUsuarioAsync(string email, string senha, string tipo) 
+    public async Task<UsuarioModel?> GetByEmailAsync(string email)
     {
-        await _jogoJustoDbContext.Usuario.AddAsync(new UsuarioModel
-        { 
-            Email = email, 
-            Password = senha, 
-            Tipo = tipo 
-        }); 
-        await _jogoJustoDbContext.SaveChangesAsync(); 
+        return await _jogoJustoDbContext.Usuario
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == email);
     }
-
-
-   
 
 
     public async Task<PagedResult<UsuarioModel>> GetUsuariosAsync(int pageNumber, int pageSize)
@@ -56,12 +63,5 @@ public class UsuarioRepository : IUsuarioRepository
             TotalCount = total,
             Items = items
         };
-    }
-
-    public bool Login(string email, string password)
-    {
-        return _jogoJustoDbContext.Usuario
-            .AsNoTracking()
-            .Any(u => u.Email == email && u.Password == password);
     }
 }
