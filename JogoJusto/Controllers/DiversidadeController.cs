@@ -75,6 +75,21 @@ namespace JogoJusto.Controllers
 
         }
 
+        [HttpGet("treinamentos")]
+        public async Task<IActionResult> GetTreinamentos()
+        {
+            try
+            {
+                var result = await _service.GerarTreinamentosAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { erro = ex.Message });
+            }
+        }
+
+
 
     }
 }

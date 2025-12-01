@@ -8,5 +8,6 @@ namespace JogoJusto.Service
         Task<DiversidadeDTO> GerarIndicadoresAsync(int pageNumber, int pageSize);
         Task<InsightsResponseDTO> GerarInsightsAsync();
         Task <PagedResult<RankingDiversidadeDTO>> GerarRankingAsync(int pageNumber, int pageSize);
+        Task<TreinamentosResponseDTO> GerarTreinamentosAsync();
     }
 }

@@ -273,6 +273,130 @@ namespace JogoJusto.Service
             };
         }
 
+        public async Task<TreinamentosResponseDTO> GerarTreinamentosAsync()
+        {
+
+            var funcionarios = await _ctx.Funcionario
+                .Include(f => f.Departamento)
+                .ToListAsync();
+
+            if (!funcionarios.Any())
+                throw new Exception("Nenhum funcionário cadastrado.");
+
+            var hoje = DateTime.Today;
+
+            var porDepto = funcionarios
+                .GroupBy(f => f.Departamento.NomeDepartamento)
+                .Select(g => new
+                {
+                    Nome = g.Key,
+                    Total = g.Count(),
+                    PercentMulheres = g.Count(f => f.Genero?.ToLower() == "feminino") * 100m / g.Count(),
+                    PercentRacial = g.Count(f =>
+                        f.Raca?.ToLower() == "preta" ||
+                        f.Raca?.ToLower() == "parda"
+                    ) * 100m / g.Count(),
+                    PercentPCD = g.Count(f => f.StPcd == true) * 100m / g.Count(),
+                    FaixasIdade = g.Select(f =>
+                    {
+                        if (!f.DataNascimento.HasValue) return -1;
+                        int idade = hoje.Year - f.DataNascimento.Value.Year;
+                        return idade;
+                    }).ToList()
+                })
+                .ToList();
+
+            var treinamentos = new List<TreinamentoDTO>();
+
+            var deptosPoucasMulheres = porDepto
+                .Where(d => d.PercentMulheres < 20 && d.Total >= 3)
+                .ToList();
+
+            if (deptosPoucasMulheres.Any())
+            {
+                treinamentos.Add(new TreinamentoDTO
+                {
+                    Titulo = "Viés Inconsciente e Igualdade de Gênero",
+                    AreaFoco = "Gênero",
+                    Prioridade = "Alta",
+                    DepartamentosAfetados = deptosPoucasMulheres.Select(d => d.Nome).ToList(),
+                    Motivo = "Departamentos com menos de 20% de mulheres na equipe."
+                });
+            }
+
+            var deptosSemDiversidadeRacial = porDepto
+                .Where(d => d.PercentRacial == 0)
+                .ToList();
+
+            if (deptosSemDiversidadeRacial.Any())
+            {
+                treinamentos.Add(new TreinamentoDTO
+                {
+                    Titulo = "Cultura Antirracista e Inclusão Étnico-Racial",
+                    AreaFoco = "Racial",
+                    Prioridade = "Alta",
+                    DepartamentosAfetados = deptosSemDiversidadeRacial.Select(d => d.Nome).ToList(),
+                    Motivo = "Departamentos sem nenhum colaborador preto ou pardo."
+                });
+            }
+
+            var deptosSemPCD = porDepto
+                .Where(d => d.PercentPCD == 0)
+                .ToList();
+
+            if (deptosSemPCD.Any())
+            {
+                treinamentos.Add(new TreinamentoDTO
+                {
+                    Titulo = "Inclusão e Acessibilidade no Ambiente de Trabalho",
+                    AreaFoco = "PCD",
+                    Prioridade = "Média",
+                    DepartamentosAfetados = deptosSemPCD.Select(d => d.Nome).ToList(),
+                    Motivo = "Departamentos sem colaboradores PCD."
+                });
+            }
+
+            var ranking = porDepto
+                .Select(d => new
+                {
+                    d.Nome,
+                    Score = (d.PercentMulheres + d.PercentRacial + d.PercentPCD) / 3m
+                })
+                .OrderBy(d => d.Score)
+                .ToList();
+
+            var criticos = ranking.Where(r => r.Score < 20).ToList();
+
+            if (criticos.Any())
+            {
+                treinamentos.Add(new TreinamentoDTO
+                {
+                    Titulo = "Cultura Inclusiva e Liderança Diversa",
+                    AreaFoco = "Cultura Organizacional",
+                    Prioridade = "Alta",
+                    DepartamentosAfetados = criticos.Select(c => c.Nome).ToList(),
+                    Motivo = "Departamentos com score de diversidade abaixo de 20."
+                });
+            }
+
+            if (treinamentos.Any())
+            {
+                treinamentos.Add(new TreinamentoDTO
+                {
+                    Titulo = "Workshop de Diversidade, Equidade e Inclusão",
+                    AreaFoco = "Geral",
+                    Prioridade = "Média",
+                    DepartamentosAfetados = new(), 
+                    Motivo = "Indicadores gerais apontam necessidade de reforço de cultura inclusiva."
+                });
+            }
+
+            return new TreinamentosResponseDTO
+            {
+                Treinamentos = treinamentos
+            };
+        }
+
 
     };
 
