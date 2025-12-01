@@ -273,7 +273,7 @@ namespace JogoJusto.Service
             };
         }
 
-        public async Task<TreinamentosResponseDTO> GerarTreinamentosAsync()
+        public async Task<PagedResult<TreinamentoDTO>> GerarTreinamentosAsync(int pageNumber, int pageSize)
         {
 
             var funcionarios = await _ctx.Funcionario
@@ -391,10 +391,21 @@ namespace JogoJusto.Service
                 });
             }
 
-            return new TreinamentosResponseDTO
+            int totalCount = treinamentos.Count;
+
+            var items = treinamentos
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedResult<TreinamentoDTO>
             {
-                Treinamentos = treinamentos
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
             };
+           
         }
 
 

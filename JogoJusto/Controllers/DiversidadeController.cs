@@ -76,20 +76,25 @@ namespace JogoJusto.Controllers
         }
 
         [HttpGet("treinamentos")]
-        public async Task<IActionResult> GetTreinamentos()
+        public async Task<IActionResult> GetTreinamentos([FromQuery] QueryParameters qp)
         {
-            try
-            {
-                var result = await _service.GerarTreinamentosAsync();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { erro = ex.Message });
-            }
+
+            var result = await _service.GerarTreinamentosAsync(qp.PageNumber, qp.PageSize);
+
+            string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+            result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+                ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+                : null;
+
+            result.PreviousPage = (qp.PageNumber > 1)
+                ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+                : null;
+
+            Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+
+            return Ok(result);
         }
-
-
 
     }
 }
