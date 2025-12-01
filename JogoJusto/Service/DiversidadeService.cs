@@ -115,5 +115,97 @@ namespace JogoJusto.Service
                 Departamentos = pagedResult
             };
         }
-    }
+
+        public async Task<InsightsResponseDTO> GerarInsightsAsync()
+        {
+            var funcionarios = await _ctx.Funcionario
+                .Include(f => f.Departamento)
+                .ToListAsync();
+
+            if (!funcionarios.Any())
+                throw new Exception("Nenhum funcionário cadastrado.");
+
+            var insights = new List<InsightDTO>();
+
+            var grupos = funcionarios
+                .GroupBy(f => f.Departamento.NomeDepartamento)
+                .ToList();
+
+            foreach (var g in grupos)
+            {
+                string depto = g.Key;
+                int total = g.Count();
+                decimal P(int x) => Math.Round((x * 100m) / total, 2);
+
+                var percMulheres = P(g.Count(f => f.Genero?.ToLower() == "feminino"));
+                var percPretos = P(g.Count(f => f.Raca?.ToLower() == "preta"));
+                var percPardos = P(g.Count(f => f.Raca?.ToLower() == "parda"));
+                var percPcd = P(g.Count(f => f.StPcd));
+
+                if (percMulheres >= 60)
+                {
+                    insights.Add(new InsightDTO
+                    {
+                        Descricao = $"O departamento {depto} possui forte presença de liderança feminina.",
+                        Detalhes = new InsightDetalheDTO
+                        {
+                            Departamento = depto,
+                            Indicador = "lideranca_feminina",
+                            Valor = percMulheres
+                        }
+                    });
+                }
+
+                if (percPretos + percPardos <= 10)
+                {
+                    insights.Add(new InsightDTO
+                    {
+                        Descricao = $"O departamento {depto} apresenta baixa representatividade racial.",
+                        Detalhes = new InsightDetalheDTO
+                        {
+                            Departamento = depto,
+                            Indicador = "diversidade_racial",
+                            Valor = percPretos + percPardos
+                        }
+                    });
+                }
+
+                if (percPcd >= 40)
+                {
+                    insights.Add(new InsightDTO
+                    {
+                        Descricao = $"O departamento {depto} é referência em inclusão PCD.",
+                        Detalhes = new InsightDetalheDTO
+                        {
+                            Departamento = depto,
+                            Indicador = "inclusao_pcd",
+                            Valor = percPcd
+                        }
+                    });
+                }
+
+                if (percMulheres == 0 && percPcd == 0 && percPretos + percPardos == 0)
+                {
+                    insights.Add(new InsightDTO
+                    {
+                        Descricao = $"O departamento {depto} demonstra ausência crítica de diversidade.",
+                        Detalhes = new InsightDetalheDTO
+                        {
+                            Departamento = depto,
+                            Indicador = "alerta_diversidade",
+                            Valor = 0
+                        }
+                    });
+                }
+            }
+
+            return new InsightsResponseDTO
+            {
+                Insights = insights
+            };
+        }
+    };
+
+    
+
 }

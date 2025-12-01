@@ -46,5 +46,11 @@ namespace JogoJusto.Controllers
                 return BadRequest(new { erro = ex.Message });
             }
         }
+
+        [HttpGet("insights")]
+        public async Task<IActionResult> GetInsights()
+        {
+            return Ok(await _service.GerarInsightsAsync());
+        }
     }
 }
