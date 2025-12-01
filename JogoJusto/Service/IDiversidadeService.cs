@@ -1,4 +1,5 @@
 ﻿using JogoJusto.DTO;
+using JogoJusto.Pagination;
 
 namespace JogoJusto.Service
 {
@@ -6,5 +7,6 @@ namespace JogoJusto.Service
     {
         Task<DiversidadeDTO> GerarIndicadoresAsync(int pageNumber, int pageSize);
         Task<InsightsResponseDTO> GerarInsightsAsync();
+        Task <PagedResult<RankingDiversidadeDTO>> GerarRankingAsync(int pageNumber, int pageSize);
     }
 }

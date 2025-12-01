@@ -52,5 +52,29 @@ namespace JogoJusto.Controllers
         {
             return Ok(await _service.GerarInsightsAsync());
         }
+
+        [HttpGet("ranking")]
+        public async Task<IActionResult> GetRanking([FromQuery] int pageNumber = 1)
+        {
+            int pageSize = 5; 
+
+            var result = await _service.GerarRankingAsync(pageNumber, pageSize);
+
+            string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+            result.NextPage = (pageNumber * pageSize < result.TotalCount)
+                ? $"{baseUrl}?pageNumber={pageNumber + 1}"
+                : null;
+
+            result.PreviousPage = (pageNumber > 1)
+                ? $"{baseUrl}?pageNumber={pageNumber - 1}"
+                : null;
+
+            return Ok(result);
+
+
+        }
+
+
     }
 }

@@ -204,6 +204,76 @@ namespace JogoJusto.Service
                 Insights = insights
             };
         }
+
+        public async Task<PagedResult<RankingDiversidadeDTO>> GerarRankingAsync(int pageNumber, int pageSize)
+        {
+            var funcionarios = await _ctx.Funcionario
+                .Include(f => f.Departamento)
+                .ToListAsync();
+
+            if (!funcionarios.Any())
+                throw new Exception("Nenhum funcionário cadastrado.");
+
+            var ranking = new List<RankingDiversidadeDTO>();
+
+            var grupos = funcionarios
+                .GroupBy(f => f.Departamento.NomeDepartamento)
+                .ToList();
+
+            foreach (var g in grupos)
+            {
+                int total = g.Count();
+                decimal P(int x) => total == 0 ? 0 : Math.Round((x * 100m) / total, 2);
+
+                var percMulheres = P(g.Count(f => f.Genero!.ToLower() == "feminino"));
+                var percRacial = P(g.Count(f => f.Raca!.ToLower() == "parda" || f.Raca!.ToLower() == "preta"));
+                var percPCD = P(g.Count(f => f.StPcd));
+
+                var hoje = DateTime.Today;
+                int m30 = g.Count(f => f.DataNascimento.HasValue && hoje.Year - f.DataNascimento.Value.Year < 30);
+                int e3045 = g.Count(f => f.DataNascimento.HasValue && hoje.Year - f.DataNascimento.Value.Year is >= 30 and <= 45);
+                int m45 = g.Count(f => f.DataNascimento.HasValue && hoje.Year - f.DataNascimento.Value.Year > 45);
+
+                var etariaBalance = Math.Round(100m - Math.Abs(P(m30) - P(e3045)) - Math.Abs(P(e3045) - P(m45)), 2);
+                if (etariaBalance < 0) etariaBalance = 0;
+
+                var score = Math.Round((percMulheres + percRacial + percPCD + etariaBalance) / 4, 2);
+
+                ranking.Add(new RankingDiversidadeDTO
+                {
+                    Departamento = g.Key,
+                    TotalFuncionarios = total,
+                    PercentualMulheres = percMulheres,
+                    PercentualRacial = percRacial,
+                    PercentualPCD = percPCD,
+                    DiversidadeEtaria = etariaBalance,
+                    ScoreDiversidade = score
+                });
+            }
+
+            var ordenado = ranking
+                .OrderByDescending(r => r.ScoreDiversidade)
+                .ToList();
+
+            int pos = 1;
+            foreach (var r in ordenado)
+                r.Posicao = pos++;
+
+            var pagedItems = ordenado
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedResult<RankingDiversidadeDTO>
+            {
+                Items = pagedItems,
+                TotalCount = ordenado.Count,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+
     };
 
     
