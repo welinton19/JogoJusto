@@ -4,6 +4,6 @@ namespace JogoJusto.Service
 {
     public interface IAnalyticsService
     {
-        DashboardDTO GerarDashboardInteligente();
+        Task<DashboardDTO> GerarDashboardInteligenteAsync();
     }
 }
