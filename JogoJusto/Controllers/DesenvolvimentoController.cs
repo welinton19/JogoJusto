@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using JogoJusto.AppDta;
-using JogoJusto.Models;
+﻿using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -12,55 +9,63 @@ namespace JogoJusto.Controllers;
 [Route("api/desenvolvimento")]
 public class DesenvolvimentoController : ControllerBase
 {
-    private readonly IDesenvolvimentoService _desenvolvimentoService;
-    private readonly IMapper _mapper;
+    private readonly IDesenvolvimentoService _service;
 
-    public DesenvolvimentoController(IDesenvolvimentoService desenvolvimentoService, IMapper mapper)
+    public DesenvolvimentoController(IDesenvolvimentoService service)
     {
-        _desenvolvimentoService = desenvolvimentoService;
-        _mapper = mapper;
+        _service = service;
     }
 
-    [Authorize]
     [HttpPost]
-    public IActionResult CriarDesenvolvimento([FromBody] DesenvolvimentoViewModel desenvolvimento)
+    public async Task<IActionResult> Criar([FromBody] DesenvolvimentoCreateViewModel vm)
     {
-        var desenvolvimentoModel = _mapper.Map<DesenvolvimentoModel>(desenvolvimento);
-        _desenvolvimentoService.CriarDesenvolvimento(desenvolvimentoModel);
-        return CreatedAtAction(nameof(GetDesenvolvimentoPorId), new { id = desenvolvimentoModel.IdDesenvolvimento }, desenvolvimentoModel);
+        await _service.CreateAsync(vm);
+        return Ok("Registro criado com sucesso.");
     }
 
-    [Authorize]
-    [HttpPut]
-    public IActionResult AtualizarDesenvolvimento([FromBody] DesenvolvimentoViewModel desenvolvimento)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Atualizar(int id, [FromBody] DesenvolvimentoUpdateViewModel vm)
     {
-        var desenvolvimentoModel = _mapper.Map<DesenvolvimentoModel>(desenvolvimento);
-        _desenvolvimentoService.AtualizarDesenvolvimento(desenvolvimentoModel);
-        return NoContent();
+        if (id != vm.IdDesenvolvimento)
+            return BadRequest("Id divergente.");
 
+        await _service.UpdateAsync(vm);
+        return Ok("Registro atualizado com sucesso.");
     }
 
-    [Authorize]
-    [HttpGet]
-    public IActionResult GetDesenvolvimentos()
-    {
-        var desenvolvimentos = _desenvolvimentoService.GetDesenvolvimentos();
-        return Ok(desenvolvimentos);
-    }
-
-    [Authorize]
     [HttpGet("{id}")]
-    public IActionResult GetDesenvolvimentoPorId(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var desenvolvimento = _desenvolvimentoService.GetDesenvolvimentoPorId(id);
-        return Ok(desenvolvimento);
+        var dev = await _service.GetByIdAsync(id);
+
+        return dev == null ? NotFound("Registro não encontrado.") : Ok(dev);
     }
 
-    [Authorize]
-    [HttpDelete("{id}")]
-    public IActionResult DeletarDesenvolvimento(int id)
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
     {
-        var desenvolvimento = _desenvolvimentoService.GetDesenvolvimentoPorId(id);
-        return Ok(desenvolvimento);
+        var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);
+
+        string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+            : null;
+
+        result.PreviousPage = (qp.PageNumber > 1)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+            : null;
+
+        Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok("Registro removido com sucesso.");
     }
 }
+

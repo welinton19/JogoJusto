@@ -1,12 +1,13 @@
 ﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
 
 namespace JogoJusto.AppDta.Repository;
 
 public interface IMetaEsgRepository
 {
-    void CriarMetaEsg(MetaEsgModel meta);
-    MetaEsgModel? ObterMetaEsgPorId(int id);
-    IEnumerable<MetaEsgModel> ObterTodasMetasEsg();
-    void AtualizarMetaEsg(MetaEsgModel meta);
-    void DeletarMetaEsg(int id);
+    Task CreateAsync(MetaEsgModel meta);
+    Task UpdateAsync(MetaEsgModel meta);
+    Task<MetaEsgModel?> GetByIdAsync(int id);
+    Task<PagedResult<MetaEsgModel>> GetAllAsync(int page, int size);
+    Task SoftDeleteAsync(int id);
 }

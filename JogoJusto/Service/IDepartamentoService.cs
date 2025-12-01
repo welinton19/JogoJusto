@@ -1,12 +1,13 @@
-﻿using JogoJusto.ViewModel;
+﻿using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
 
 namespace JogoJusto.Service;
 
 public interface IDepartamentoService
 {
-    void CriarDepartamento(string nome);
-    void GestarDepartamento(int nome);
-    IEnumerable<DepartamentoViewModel> GetDepartamentos();
+    Task UpdateAsync(DepartamentoUpdateViewModel vm);
+    Task<DepartamentoViewModel?> GetByIdAsync(int id);
+    Task<PagedResult<DepartamentoViewModel>> GetAllAsync(int pageNumber, int pageSize);
 }
 
 

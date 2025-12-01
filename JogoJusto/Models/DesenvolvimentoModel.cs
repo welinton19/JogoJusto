@@ -38,8 +38,6 @@ public class DesenvolvimentoModel
     [Column("CERTIFICADO", TypeName = "BLOB")]
     public byte[]? Certificado { get; set; }
 
-    //public byte[]? Orgao { get; set; } = Array.Empty<byte>();
-
     [Required]
     [Column("DT_REGISTRO", TypeName = "DATE")]
     public DateTime DataRegistroDeDados { get; set; }
@@ -55,5 +53,5 @@ public class DesenvolvimentoModel
 
     [ForeignKey("FuncionarioId")]
     [InverseProperty("Desenvolvimentos")]
-    public FuncionarioModel Funcionario { get; set; }= new();
+    public FuncionarioModel? Funcionario { get; set; }
 }

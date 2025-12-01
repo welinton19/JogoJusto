@@ -1,11 +1,13 @@
-﻿namespace JogoJusto.Service;
+﻿using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
+
+namespace JogoJusto.Service;
 
 public interface IEmpresaService
 {
-    void CriarEmpresa(string nome);
-    void AtualizarEmpresa(int id, string nome);
-    object Get(int id);
-    object Get(string nome);
-    void DeletarEmpresa(int id);
-
+    Task CreateAsync(EmpresaCreateViewModel vm);
+    Task UpdateAsync(EmpresaUpdateViewModel vm);
+    Task <EmpresaViewModel?>GetByIdAsync(int id);
+    Task DeleteAsync(int id);
+    Task <PagedResult<EmpresaViewModel>>GetAllAsync(int pageNumber, int pageSize);
 }

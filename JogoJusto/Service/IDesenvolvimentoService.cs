@@ -1,10 +1,14 @@
-﻿namespace JogoJusto.Service;
+﻿using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
+
+namespace JogoJusto.Service;
 
 public interface IDesenvolvimentoService
 {
-    void CriarDesenvolvimento(object desenvolvimento);
-    void AtualizarDesenvolvimento(object desenvolvimento);
-    object GetDesenvolvimentos();
-    object GetDesenvolvimentoPorId(int id);
-    void DeletarDesenvolvimento(int id);
+    Task CreateAsync(DesenvolvimentoCreateViewModel vm);
+    Task UpdateAsync(DesenvolvimentoUpdateViewModel vm);
+    Task DeleteAsync(int id);
+
+    Task<DesenvolvimentoViewModel?> GetByIdAsync(int id);
+    Task<PagedResult<DesenvolvimentoViewModel>> GetAllAsync(int page, int size);
 }
