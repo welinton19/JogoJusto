@@ -1,12 +1,11 @@
+using System.Text;
 using JogoJusto.AppDta;
 using JogoJusto.AppDta.Repository;
 using JogoJusto.Auth;
 using JogoJusto.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +45,8 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IDiversidadeService, DiversidadeService>();
+
 
 // DB Context
 builder.Services.AddDbContext<JogoJustoDbContext>(options =>

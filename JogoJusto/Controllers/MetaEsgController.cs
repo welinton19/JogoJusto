@@ -1,9 +1,6 @@
-﻿using AutoMapper;
-using JogoJusto.AppDta;
-using JogoJusto.Models;
+﻿using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -12,46 +9,61 @@ namespace JogoJusto.Controllers;
 [Route("api/metaesg")]
 public class MetaEsgController : ControllerBase
 {
-    private readonly IMetaEsgService _metaEsgService;
-    private readonly IMapper _mapper;
+    private readonly IMetaEsgService _service;
 
-    public MetaEsgController(IMetaEsgService metaEsgService, IMapper mapper)
+    public MetaEsgController(IMetaEsgService service)
     {
-        _metaEsgService = metaEsgService;
-        _mapper = mapper;
+        _service = service;
     }
 
-    [Authorize]
     [HttpPost]
-    public IActionResult CriarMeaEsg([FromBody] MetaEsgViewModel meta)
+    public async Task<IActionResult> Criar([FromBody] MetaEsgCreateViewModel vm)
     {
-        var metaModel = _mapper.Map<MetaEsgModel>(meta);
-        _metaEsgService.CriarMetaEsg(metaModel);
-        return CreatedAtAction(nameof(GetMetaEsg), new { id = metaModel.IdMetaEsg }, metaModel);
+        await _service.CreateAsync(vm);
+        return Ok("Meta ESG criada com sucesso.");
     }
 
-    [Authorize]
-    [HttpGet]
-    public IActionResult GetMetaEsg()
-    {
-        _metaEsgService.GetMetaEsg();
-        return Ok();
-    }
-
-    [Authorize]
     [HttpPut("{id}")]
-    [ValidateAntiForgeryToken]  
-    public IActionResult AtualizarMetaEsg([FromBody] MetaEsgModel meta)
+    public async Task<IActionResult> Atualizar(int id, [FromBody] MetaEsgUpdateViewModel vm)
     {
-        _metaEsgService.AtualizarMetaEsg(meta.IdMetaEsg, meta);
-        return Ok();
+        if (id != vm.IdMetaEsg)
+            return BadRequest("Id divergente.");
+
+        await _service.UpdateAsync(vm);
+        return Ok("Meta ESG atualizada com sucesso.");
     }
 
-    [Authorize]
-    [HttpDelete("{id}")]
-    public IActionResult DeleteMetaEsg(int id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
     {
-        _metaEsgService.DeletarMetaEsg(id);
-        return Ok();
+        var meta = await _service.GetByIdAsync(id);
+        return meta == null ? NotFound() : Ok(meta);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
+    {
+        var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);
+
+        string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+            : null;
+
+        result.PreviousPage = (qp.PageNumber > 1)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+            : null;
+
+        Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _service.DeleteAsync(id);
+        return Ok("Meta ESG excluída com sucesso.");
     }
 }

@@ -1,43 +1,65 @@
-﻿using JogoJusto.AppDta;
+﻿using AutoMapper;
+using JogoJusto.AppDta;
+using JogoJusto.AppDta.Repository;
 using JogoJusto.Models;
+using JogoJusto.Pagination;
+using JogoJusto.ViewModel;
 
 namespace JogoJusto.Service;
-
 public class DesenvolvimentoService : IDesenvolvimentoService
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
-    public DesenvolvimentoService(JogoJustoDbContext jogodbcontext)
-    {
-        _jogodbcontext = jogodbcontext;
-    }
-    public void AtualizarDesenvolvimento(object desenvolvimento)
-    {
-        var desenvolvimentoExistente = _jogodbcontext.Desenvolvimento.Find(((dynamic)desenvolvimento).IdDesenvolvimento);
-    }
+    private readonly IDesenvolvimentoRepository _repo;
+    private readonly IMapper _mapper;
 
-    public void CriarDesenvolvimento(object desenvolvimento)
+    public DesenvolvimentoService(IDesenvolvimentoRepository repo, IMapper mapper)
     {
-        var novoDesenvolvimento = (dynamic)desenvolvimento;
-        _jogodbcontext.Desenvolvimento.Add(novoDesenvolvimento);
-        _jogodbcontext.SaveChanges();
-
+        _repo = repo;
+        _mapper = mapper;
     }
 
-    public void DeletarDesenvolvimento(int id)
+    public async Task CreateAsync(DesenvolvimentoCreateViewModel vm)
     {
-        var desenvolvimentoExistente = _jogodbcontext.Desenvolvimento.Find(id);
+        var model = _mapper.Map<DesenvolvimentoModel>(vm);
 
+        model.DataRegistroDeDados = DateTime.UtcNow;
+
+        await _repo.CreateAsync(model);
     }
 
-    public object GetDesenvolvimentoPorId(int id)
+    public async Task UpdateAsync(DesenvolvimentoUpdateViewModel vm)
     {
-        var desenvolvimento = _jogodbcontext.Desenvolvimento.Find(id);
-        return desenvolvimento ?? new DesenvolvimentoModel();
+        var existing = await _repo.GetByIdAsync(vm.IdDesenvolvimento);
+
+        if (existing == null)
+            throw new Exception("Desenvolvimento não encontrado.");
+
+        _mapper.Map(vm, existing);
+
+        await _repo.UpdateAsync(existing);
     }
 
-    public object GetDesenvolvimentos()
+    public async Task DeleteAsync(int id)
     {
-        var desenvolvimentos = _jogodbcontext.Desenvolvimento.ToList();
-        return desenvolvimentos;
+        await _repo.DeleteAsync(id);
+    }
+
+    public async Task<DesenvolvimentoViewModel?> GetByIdAsync(int id)
+    {
+        var model = await _repo.GetByIdAsync(id);
+
+        return model == null ? null : _mapper.Map<DesenvolvimentoViewModel>(model);
+    }
+
+    public async Task<PagedResult<DesenvolvimentoViewModel>> GetAllAsync(int page, int size)
+    {
+        var paged = await _repo.GetAllAsync(page, size);
+
+        return new PagedResult<DesenvolvimentoViewModel>
+        {
+            Items = paged.Items.Select(_mapper.Map<DesenvolvimentoViewModel>).ToList(),
+            PageNumber = paged.PageNumber,
+            PageSize = paged.PageSize,
+            TotalCount = paged.TotalCount
+        };
     }
 }

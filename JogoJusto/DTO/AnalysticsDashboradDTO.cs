@@ -2,13 +2,10 @@
 
 namespace JogoJusto.DTO;
 
-public class AnalysticsDashboradDTO
+public class AnalyticsDashboardDTO
 {
-    public int TotalEmpresas { get; set; }
-    public int TotalFuncionarios { get; set; }
-    public int TotalDepartamentos { get; set; }
-    public decimal MediaSalarios { get; set; }
-    public double ScoreEsg { get; set; }
-
-    
+    public EmpresaResumoDTO Empresa { get; set; }
+    public List<DepartamentoScoreDTO> Departamentos { get; set; } = new();
+    public List<FuncionariosStatusDTO> Funcionarios { get; set; } = new();
+    public EsgScoreDTO ESG { get; set; }
 }

@@ -17,7 +17,7 @@ public class DepartamentoModel
     public string NomeDepartamento { get; set; }= string.Empty;
 
     [Column("GERENTE_ID")]
-    public int GerenteId { get; set; }
+    public int? GerenteId { get; set; }
 
     [Required]
     [Column("T_EMPRESA_ID_EMPRESA")]

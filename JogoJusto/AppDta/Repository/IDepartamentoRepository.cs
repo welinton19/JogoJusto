@@ -1,8 +1,11 @@
-﻿namespace JogoJusto.AppDta.Repository;
+﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
+
+namespace JogoJusto.AppDta.Repository;
 
 public interface IDepartamentoRepository
 {
-    void CriarDepartamento(string nome);
-
-    void GetDepartamentos();
+    Task<DepartamentoModel?> GetByIdAsync(int id);
+    Task<PagedResult<DepartamentoModel>> GetAllAsync(int pageNumber, int pageSize);
+    Task UpdateAsync(DepartamentoModel dept);
 }

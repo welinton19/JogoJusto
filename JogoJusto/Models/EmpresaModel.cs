@@ -16,10 +16,10 @@ public class EmpresaModel
     [Column("NR_CNPJ")]
     public string Cnpj { get; set; } = string.Empty;
 
-    [Required]
+   
     [MaxLength(15)]
     [Column("NR_INSCRI_EST")]
-    public string InscricaoEstadual { get; set; } = string.Empty;
+    public string? InscricaoEstadual { get; set; } = string.Empty;
 
     [Required]
     [MaxLength(50)]
