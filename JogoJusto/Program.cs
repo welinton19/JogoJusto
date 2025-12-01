@@ -45,6 +45,8 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IDiversidadeService, DiversidadeService>();
+
 
 // DB Context
 builder.Services.AddDbContext<JogoJustoDbContext>(options =>
