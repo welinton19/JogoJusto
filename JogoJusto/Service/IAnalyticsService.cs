@@ -1,8 +1,9 @@
 ﻿using JogoJusto.DTO;
 
-namespace JogoJusto.Service;
-
-public interface IAnalyticsService
+namespace JogoJusto.Service
 {
-    AnalysticsDashboradDTO GerarDashboardInteligente();
+    public interface IAnalyticsService
+    {
+        DashboardDTO GerarDashboardInteligente();
+    }
 }
