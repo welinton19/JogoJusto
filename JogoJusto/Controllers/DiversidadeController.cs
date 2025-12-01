@@ -48,9 +48,24 @@ namespace JogoJusto.Controllers
         }
 
         [HttpGet("insights")]
-        public async Task<IActionResult> GetInsights()
+        public async Task<IActionResult> GetInsights([FromQuery] QueryParameters qp)
         {
-            return Ok(await _service.GerarInsightsAsync());
+            var result = await _service.GerarInsightsAsync(qp.PageNumber, qp.PageSize);
+
+            string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+            result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+                ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+                : null;
+
+            result.PreviousPage = (qp.PageNumber > 1)
+                ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+                : null;
+
+            Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+
+            return Ok(result);
+
         }
 
         [HttpGet("ranking")]
