@@ -1,6 +1,9 @@
-﻿using JogoJusto.Pagination;
+﻿
+using JogoJusto.Atributtes;
+using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -17,6 +20,8 @@ public class EmpresaController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Criar([FromBody] EmpresaCreateViewModel vm)
     {
         await _service.CreateAsync(vm);
@@ -24,6 +29,8 @@ public class EmpresaController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Atualizar(int id, [FromBody] EmpresaUpdateViewModel vm)
     {
         if (id != vm.EmpresaId)
@@ -34,6 +41,8 @@ public class EmpresaController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetById(int id)
     {
         var empresa = await _service.GetByIdAsync(id);
@@ -42,26 +51,30 @@ public class EmpresaController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);
 
-    string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+        string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-    result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
-        ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
-        : null;
+        result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+            : null;
 
-    result.PreviousPage = (qp.PageNumber > 1)
-        ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
-        : null;
+        result.PreviousPage = (qp.PageNumber > 1)
+            ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+            : null;
 
-    Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+        Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
 
-    return Ok(result);
+        return Ok(result);
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);

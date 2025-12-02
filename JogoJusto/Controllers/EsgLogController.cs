@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using JogoJusto.AppDta;
-using JogoJusto.Models;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +19,7 @@ public class EsgLogController : ControllerBase
     }
 
     [HttpPost]
+
     public IActionResult CriarEsgLog([FromBody] EsgLogViewModel esgLog)
     {
         _esglogservice.CriarEsgLog(esgLog);
@@ -35,6 +34,7 @@ public class EsgLogController : ControllerBase
     }
 
     [HttpDelete]
+
     public IActionResult DeleteEsgLogs()
     {
         _esglogservice.DeleteEsgLogs();
