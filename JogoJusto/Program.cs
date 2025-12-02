@@ -50,6 +50,8 @@ builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 builder.Services.AddScoped<IDiversidadeService, DiversidadeService>();
+builder.Services.AddScoped<IEsgLogRepository, EsgLogRepository>();
+builder.Services.AddScoped<IEsgLogService, EsgLogService>();
 
 builder.Services.AddDbContext<JogoJustoDbContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("JogoJustoConnection")));

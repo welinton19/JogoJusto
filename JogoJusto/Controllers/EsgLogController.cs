@@ -1,7 +1,6 @@
-﻿using AutoMapper;
-using JogoJusto.Atributtes;
+﻿using JogoJusto.Atributtes;
+using JogoJusto.Pagination;
 using JogoJusto.Service;
-using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,29 +11,34 @@ namespace JogoJusto.Controllers;
 public class EsgLogController : ControllerBase
 {
     private readonly IEsgLogService _esglogservice;
-    private readonly IMapper _mapper;
 
-    public EsgLogController(IEsgLogService esglogservice, IMapper mapper)
+
+    public EsgLogController(IEsgLogService esglogservice)
     {
         _esglogservice = esglogservice;
-        _mapper = mapper;
-    }
-
-    [HttpPost]
-    [Authorize]
-    [RoleAuthorize("Admin")]
-    public IActionResult CriarEsgLog([FromBody] EsgLogViewModel esgLog)
-    {
-        _esglogservice.CriarEsgLog(esgLog);
-        return Ok("Log ESG criado com sucesso.");
     }
 
     [HttpGet]
     [Authorize]
     [RoleAuthorize("Admin")]
-    public IActionResult GetEsgLogs()
+    public async Task<IActionResult> GetEsgLogs([FromQuery] QueryParameters qp)
     {
-        var esgLogs = _esglogservice.GetEsgLogs();
-        return Ok(esgLogs);
+        var result = await _esglogservice.GetEsgLogsAsync(qp.PageNumber, qp.PageSize);
+
+        string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+
+        result.NextPage =
+            (qp.PageNumber * qp.PageSize < result.TotalCount)
+                ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
+                : null;
+
+        result.PreviousPage =
+            qp.PageNumber > 1
+                ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
+                : null;
+
+        Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+
+        return Ok(result);
     }
 }

@@ -1,9 +1,10 @@
-﻿namespace JogoJusto.Service;
+﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
+
+namespace JogoJusto.Service;
 
 public interface IEsgLogService
 {
-    void CriarEsgLog(object esgLog);
-    object GetEsgLogs();
-    void DeleteEsgLogs();
+    Task<PagedResult<EsgLogModel>> GetEsgLogsAsync(int pageNumber, int pageSize);
 
 }

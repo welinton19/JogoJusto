@@ -1,29 +1,21 @@
-﻿using JogoJusto.AppDta;
+﻿using JogoJusto.AppDta.Repository;
+using JogoJusto.Models;
+using JogoJusto.Pagination;
 
-namespace JogoJusto.Service;
-
-public class EsgLogService : IEsgLogService
+namespace JogoJusto.Service
 {
-    private readonly JogoJustoDbContext _jogodbcontext;
-
-    public EsgLogService(JogoJustoDbContext jogodbcontext)
+    public class EsgLogService : IEsgLogService
     {
-        _jogodbcontext = jogodbcontext;
-    }
+        private readonly IEsgLogRepository _repo;
 
-    public void CriarEsgLog(object esgLog)
-    {
-        var log = esgLog as Models.EsgLogModel;
-    }
+        public EsgLogService(IEsgLogRepository repo)
+        {
+            _repo = repo;
+        }
 
-    public void DeleteEsgLogs()
-    {
-        var esgLogs = _jogodbcontext.EsgLogModel.ToList();
-    }
-
-    public object GetEsgLogs()
-    {
-        var esgLogs = _jogodbcontext.EsgLogModel.ToList();
-        return esgLogs;
+        public Task<PagedResult<EsgLogModel>> GetEsgLogsAsync(int pageNumber, int pageSize)
+        {
+            return _repo.GetEsgLogsAsync(pageNumber, pageSize);
+        }
     }
 }

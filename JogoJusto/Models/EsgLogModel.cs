@@ -30,5 +30,4 @@ public class EsgLogModel
     [Required]
     [Column("DT_REGISTRO", TypeName = "DATE")]
     public DateTime DataAcao { get; set; }
-    public decimal Nota { get; internal set; }
 }
