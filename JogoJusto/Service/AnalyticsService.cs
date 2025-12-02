@@ -1,4 +1,5 @@
 ﻿using JogoJusto.AppDta;
+using JogoJusto.AppDta.Repository;
 using JogoJusto.DTO;
 using JogoJusto.Models;
 using Microsoft.EntityFrameworkCore;

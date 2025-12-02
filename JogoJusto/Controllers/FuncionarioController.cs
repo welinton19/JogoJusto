@@ -1,6 +1,8 @@
-﻿using JogoJusto.Pagination;
+﻿using JogoJusto.Atributtes;
+using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -19,6 +21,8 @@ public class FuncionarioController : ControllerBase
 
 
     [HttpPost]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Criar([FromBody] JogoJusto.ViewModel.FuncionarioCreateViewModel vm)
     {
         await _service.CreateAsync(vm);
@@ -26,6 +30,8 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Atualizar(int id, [FromBody] FuncionarioUpdateViewModel vm)
     {
         if (id != vm.FuncionarioId)
@@ -36,6 +42,8 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetFuncionarios([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetFuncionariosAsync(qp.PageNumber, qp.PageSize);
@@ -56,6 +64,8 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetById(int id)
     {
         var func = await _service.GetByIdAsync(id);
@@ -67,6 +77,8 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);

@@ -1,15 +1,24 @@
-using System.Text;
 using JogoJusto.AppDta;
 using JogoJusto.AppDta.Repository;
 using JogoJusto.Auth;
+using JogoJusto.Middleware;
 using JogoJusto.Service;
+using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+
+builder.Services.AddValidatorsFromAssemblyContaining<UsuarioCreateViewModelValidator>();
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -17,7 +26,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
-
+builder.Services.AddAuthorization(options => 
+{
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User", "Admin"));
+});
 
 // JWT
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
@@ -54,6 +67,8 @@ builder.Services.AddDbContext<JogoJustoDbContext>(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ErrorHanddlerMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -62,6 +77,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 

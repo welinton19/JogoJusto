@@ -1,4 +1,5 @@
-﻿using JogoJusto.Models;
+﻿
+using JogoJusto.Models;
 using JogoJusto.Pagination;
 using JogoJusto.ViewModel;
 

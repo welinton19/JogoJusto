@@ -1,4 +1,6 @@
-﻿namespace JogoJusto.DTO;
+﻿using JogoJusto.AppDta;
+
+namespace JogoJusto.DTO;
 
 public class EmpresaResumoDTO
 {

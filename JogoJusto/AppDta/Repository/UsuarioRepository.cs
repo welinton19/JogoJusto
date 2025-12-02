@@ -1,4 +1,5 @@
-﻿using JogoJusto.Models;
+﻿
+using JogoJusto.Models;
 using JogoJusto.Pagination;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,8 +26,8 @@ public class UsuarioRepository : IUsuarioRepository
         await _jogoJustoDbContext.Usuario.AddAsync(new UsuarioModel
         { 
             Email = email, 
-            Password = senha, 
-            Tipo = tipo 
+            Password = senha,
+            Tipo = tipo
         }); 
         await _jogoJustoDbContext.SaveChangesAsync(); 
     }

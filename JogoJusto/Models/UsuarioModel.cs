@@ -20,6 +20,11 @@ public class UsuarioModel
     public string Password { get; set; } = string.Empty;
 
     [Column("TIPO")]
-    public string Tipo { get; set; } = string.Empty;
+    public string Tipo { get; set; }
+
+
+
+
+
 }
 

@@ -1,6 +1,9 @@
-﻿using JogoJusto.Pagination;
+﻿
+using JogoJusto.Atributtes;
+using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -17,6 +20,8 @@ public class DesenvolvimentoController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Criar([FromBody] DesenvolvimentoCreateViewModel vm)
     {
         await _service.CreateAsync(vm);
@@ -24,6 +29,8 @@ public class DesenvolvimentoController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Atualizar(int id, [FromBody] DesenvolvimentoUpdateViewModel vm)
     {
         if (id != vm.IdDesenvolvimento)
@@ -34,6 +41,8 @@ public class DesenvolvimentoController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetById(int id)
     {
         var dev = await _service.GetByIdAsync(id);
@@ -42,6 +51,8 @@ public class DesenvolvimentoController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);
@@ -62,6 +73,8 @@ public class DesenvolvimentoController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);

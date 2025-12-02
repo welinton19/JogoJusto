@@ -1,24 +1,24 @@
 ﻿using JogoJusto.Service;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JogoJusto.Controllers
+namespace JogoJusto.Controllers;
+
+[ApiController]
+[Route("api/dashboard")]
+public class DashboardController : ControllerBase
 {
-    [ApiController]
-    [Route("api/dashboard")]
-    public class DashboardController : ControllerBase
+    private readonly IAnalyticsService _analyticsService;
+
+    public DashboardController(IAnalyticsService analyticsService)
     {
-        private readonly IAnalyticsService _analyticsService;
+        _analyticsService = analyticsService;
+    }
 
-        public DashboardController(IAnalyticsService analyticsService)
-        {
-            _analyticsService = analyticsService;
-        }
+    [HttpGet("inteligente")]
 
-        [HttpGet("inteligente")]
-        public async Task<IActionResult> ObterDashboard()
-        {
-            var result = await _analyticsService.GerarDashboardInteligenteAsync();
-            return Ok(result);
-        }
+    public async Task<IActionResult> ObterDashboard()
+    {
+        var result = await _analyticsService.GerarDashboardInteligenteAsync();
+        return Ok(result);
     }
 }

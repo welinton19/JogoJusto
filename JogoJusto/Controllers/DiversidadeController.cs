@@ -1,115 +1,104 @@
-﻿using JogoJusto.DTO;
+﻿using JogoJusto.Atributtes;
+using JogoJusto.DTO;
 using JogoJusto.Pagination;
 using JogoJusto.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace JogoJusto.Controllers
+namespace JogoJusto.Controllers;
+
+[ApiController]
+[Route("api/diversidade")]
+public class DiversidadeController : ControllerBase
 {
-    [ApiController]
-    [Route("api/diversidade")]
-    public class DiversidadeController : ControllerBase
-    {
-        private readonly IDiversidadeService _service;
+    private readonly IDiversidadeService _service;
 
         public DiversidadeController(IDiversidadeService service)
         {
             _service = service;
         }
 
-        [HttpGet("indicadores")]
-        public async Task<ActionResult<DiversidadeDTO>> GetIndicadores([FromQuery] QueryParameters qp)
+    [HttpGet("indicadores")]
+    [Authorize]
+    [RoleAuthorize("Admin,User")]
+    public async Task<ActionResult<DiversidadeDTO>> GetIndicadores([FromQuery] QueryParameters qp)
+    {
+        try
         {
-            try
-            {
-                var result = await _service.GerarIndicadoresAsync(qp.PageNumber, qp.PageSize);
-
-                string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
-
-                var deptos = result.Departamentos;
-
-                deptos.NextPage =
-                    (qp.PageNumber * qp.PageSize < deptos.TotalCount)
-                    ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
-                    : null;
-
-                deptos.PreviousPage =
-                    qp.PageNumber > 1
-                    ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
-                    : null;
-
-                Response.Headers.Add("X-Total-Count", deptos.TotalCount.ToString());
-
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { erro = ex.Message });
-            }
-        }
-
-        [HttpGet("insights")]
-        public async Task<IActionResult> GetInsights([FromQuery] QueryParameters qp)
-        {
-            var result = await _service.GerarInsightsAsync(qp.PageNumber, qp.PageSize);
+            var result = await _service.GerarIndicadoresAsync(qp.PageNumber, qp.PageSize);
 
             string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-            result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
+            var deptos = result.Departamentos;
+
+            deptos.NextPage =
+                (qp.PageNumber * qp.PageSize < deptos.TotalCount)
                 ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
                 : null;
 
-            result.PreviousPage = (qp.PageNumber > 1)
+            deptos.PreviousPage =
+                qp.PageNumber > 1
                 ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
                 : null;
 
-            Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+            Response.Headers.Add("X-Total-Count", deptos.TotalCount.ToString());
 
             return Ok(result);
-
         }
-
-        [HttpGet("ranking")]
-        public async Task<IActionResult> GetRanking([FromQuery] int pageNumber = 1)
+        catch (Exception ex)
         {
-            int pageSize = 5; 
-
-            var result = await _service.GerarRankingAsync(pageNumber, pageSize);
-
-            string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
-
-            result.NextPage = (pageNumber * pageSize < result.TotalCount)
-                ? $"{baseUrl}?pageNumber={pageNumber + 1}"
-                : null;
-
-            result.PreviousPage = (pageNumber > 1)
-                ? $"{baseUrl}?pageNumber={pageNumber - 1}"
-                : null;
-
-            return Ok(result);
-
-
+            return BadRequest(new { erro = ex.Message });
         }
+    }
 
-        [HttpGet("treinamentos")]
-        public async Task<IActionResult> GetTreinamentos([FromQuery] QueryParameters qp)
-        {
+    [HttpGet("insights")]
+    [Authorize]
+    [RoleAuthorize("Admin,User")]
+    public async Task<IActionResult> GetInsights()
+    {
+        return Ok(await _service.GerarInsightsAsync());
+    }
 
-            var result = await _service.GerarTreinamentosAsync(qp.PageNumber, qp.PageSize);
+    [HttpGet("ranking")]
+    [Authorize]
+    [RoleAuthorize("Admin,User")]
+    public async Task<IActionResult> GetRanking([FromQuery] int pageNumber = 1)
+    {
+        int pageSize = 5; 
 
-            string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
+        var result = await _service.GerarRankingAsync(pageNumber, pageSize);
 
-            result.NextPage = (qp.PageNumber * qp.PageSize < result.TotalCount)
-                ? $"{baseUrl}?pageNumber={qp.PageNumber + 1}&pageSize={qp.PageSize}"
-                : null;
+        string baseUrl = $"{Request.Scheme}://{Request.Host}{Request.Path}";
 
-            result.PreviousPage = (qp.PageNumber > 1)
-                ? $"{baseUrl}?pageNumber={qp.PageNumber - 1}&pageSize={qp.PageSize}"
-                : null;
+        result.NextPage = (pageNumber * pageSize < result.TotalCount)
+            ? $"{baseUrl}?pageNumber={pageNumber + 1}"
+            : null;
 
-            Response.Headers.Add("X-Total-Count", result.TotalCount.ToString());
+        result.PreviousPage = (pageNumber > 1)
+            ? $"{baseUrl}?pageNumber={pageNumber - 1}"
+            : null;
 
-            return Ok(result);
-        }
+        return Ok(result);
+
 
     }
+
+    [HttpGet("treinamentos")]
+    [Authorize]
+    [RoleAuthorize("Admin,User")]
+    public async Task<IActionResult> GetTreinamentos()
+    {
+        try
+        {
+            var result = await _service.GerarTreinamentosAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { erro = ex.Message });
+        }
+    }
+
+
+
 }

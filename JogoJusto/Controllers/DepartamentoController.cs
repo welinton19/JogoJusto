@@ -1,6 +1,8 @@
-﻿using JogoJusto.Pagination;
+﻿using JogoJusto.Atributtes;
+using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -15,8 +17,10 @@ public class DepartamentoController : ControllerBase
     {
         _service = service;
     }
-    
+
     [HttpPut("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> Atualizar(int id, [FromBody] DepartamentoUpdateViewModel vm)
     {
         if (id != vm.IdDepartamento)
@@ -27,6 +31,8 @@ public class DepartamentoController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetById(int id)
     {
         var dept = await _service.GetByIdAsync(id);
@@ -34,6 +40,8 @@ public class DepartamentoController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
+    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);
