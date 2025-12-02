@@ -1,5 +1,5 @@
 ﻿using JogoJusto.AppDta.Repository;
-using JogoJusto.Models;
+using JogoJusto.DTO;
 using JogoJusto.Pagination;
 
 namespace JogoJusto.Service
@@ -13,9 +13,29 @@ namespace JogoJusto.Service
             _repo = repo;
         }
 
-        public Task<PagedResult<EsgLogModel>> GetEsgLogsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<EsgLogDTO>> GetEsgLogsAsync(int page, int size)
         {
-            return _repo.GetEsgLogsAsync(pageNumber, pageSize);
+            var result = await _repo.GetEsgLogsAsync(page, size);
+
+            var mapped = result.Items.Select(e => new EsgLogDTO
+            {
+                Id = e.IdEsgLog,
+                Departamento = e.Departamento.NomeDepartamento,
+                Empresa = e.Departamento.Empresa.Nome,
+                Acao = e.AcaoRealizada,
+                Recomendacao = e.Recomendacao,
+                Data = e.DataAcao
+            }).ToList();
+
+            return new PagedResult<EsgLogDTO>
+            {
+                Items = mapped,
+                TotalCount = result.TotalCount,
+                PageNumber = page,
+                PageSize = size
+            };
         }
+
     }
+
 }

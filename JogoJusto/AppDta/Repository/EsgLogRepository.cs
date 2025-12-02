@@ -15,7 +15,12 @@ namespace JogoJusto.AppDta.Repository
 
         public async Task<PagedResult<EsgLogModel>> GetEsgLogsAsync(int pageNumber, int pageSize)
         {
-            var query = _jogodbcontext.EsgLogModel.AsQueryable();
+            //var query = _jogodbcontext.EsgLogModel.AsQueryable();
+
+            var query = _jogodbcontext.EsgLogModel
+          .Include(e => e.Departamento)
+              .ThenInclude(d => d.Empresa)
+          .AsQueryable();
 
             int total = await query.CountAsync();
 
