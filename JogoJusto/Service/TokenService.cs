@@ -1,14 +1,10 @@
-﻿using JogoJusto.AppDta;
-using JogoJusto.Models;
-
-
-
-using JogoJusto.Auth;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using JogoJusto.Auth;
+using JogoJusto.Models;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JogoJusto.Service;
 
