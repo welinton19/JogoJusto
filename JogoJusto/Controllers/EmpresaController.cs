@@ -21,7 +21,7 @@ public class EmpresaController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> Criar([FromBody] EmpresaCreateViewModel vm)
     {
         await _service.CreateAsync(vm);
@@ -30,7 +30,7 @@ public class EmpresaController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> Atualizar(int id, [FromBody] EmpresaUpdateViewModel vm)
     {
         if (id != vm.EmpresaId)
@@ -42,7 +42,7 @@ public class EmpresaController : ControllerBase
 
     [HttpGet("{id}")]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> GetById(int id)
     {
         var empresa = await _service.GetByIdAsync(id);
@@ -52,7 +52,6 @@ public class EmpresaController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);
@@ -74,7 +73,7 @@ public class EmpresaController : ControllerBase
 
     [HttpDelete("{id}")]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);

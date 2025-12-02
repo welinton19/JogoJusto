@@ -7,11 +7,15 @@ public class RoleAuthorizationHandler : AuthorizationHandler<RoleRequirement>
         AuthorizationHandlerContext context,
         RoleRequirement requirement)
     {
-        var role = context.User.FindFirst("role")?.Value;
+        var userRole = context.User.FindFirst("role")?.Value;
 
-        if (role == requirement.Role)
+        if (userRole != null && requirement.Roles.Contains(userRole))
         {
             context.Succeed(requirement);
+        }
+        else
+        {
+            context.Fail();
         }
 
         return Task.CompletedTask;

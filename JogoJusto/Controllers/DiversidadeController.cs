@@ -20,7 +20,6 @@ public class DiversidadeController : ControllerBase
 
     [HttpGet("indicadores")]
     [Authorize]
-    [RoleAuthorize("Admin,User")]
     public async Task<ActionResult<DiversidadeDTO>> GetIndicadores([FromQuery] QueryParameters qp)
     {
         try
@@ -75,8 +74,6 @@ public class DiversidadeController : ControllerBase
     }
 
     [HttpGet("ranking")]
-    [Authorize]
-    [RoleAuthorize("Admin,User")]
     public async Task<IActionResult> GetRanking([FromQuery] int pageNumber = 1)
     {
         int pageSize = 5; 
@@ -119,10 +116,5 @@ public class DiversidadeController : ControllerBase
 
         return Ok(result);
     }
-
-
-
-
-
 
 }

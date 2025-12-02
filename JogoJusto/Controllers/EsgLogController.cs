@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using JogoJusto.Atributtes;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -19,25 +21,20 @@ public class EsgLogController : ControllerBase
     }
 
     [HttpPost]
-
+    [Authorize]
+    [RoleAuthorize("Admin")]
     public IActionResult CriarEsgLog([FromBody] EsgLogViewModel esgLog)
     {
         _esglogservice.CriarEsgLog(esgLog);
-        return Ok();
+        return Ok("Log ESG criado com sucesso.");
     }
 
     [HttpGet]
+    [Authorize]
+    [RoleAuthorize("Admin")]
     public IActionResult GetEsgLogs()
     {
         var esgLogs = _esglogservice.GetEsgLogs();
         return Ok(esgLogs);
-    }
-
-    [HttpDelete]
-
-    public IActionResult DeleteEsgLogs()
-    {
-        _esglogservice.DeleteEsgLogs();
-        return Ok();
     }
 }

@@ -1,6 +1,8 @@
-﻿using JogoJusto.Pagination;
+﻿using JogoJusto.Atributtes;
+using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -19,6 +21,8 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost("criar")]
+    [Authorize]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> CriarUsuario([FromBody] UsuarioCreateViewModel usuario)
     {
         await _service.CriarUsuario(usuario.Tipo, usuario.Email, usuario.Password);
@@ -43,6 +47,8 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> GetUsuarios([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetUsuariosAsync(qp.PageNumber, qp.PageSize);

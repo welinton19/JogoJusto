@@ -7,11 +7,13 @@ namespace JogoJusto.Atributtes;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class RoleAuthorizeAttribute : Attribute, IAuthorizationFilter
 {
-    private readonly string _role;
+    private readonly string[] _roles;
 
-    public RoleAuthorizeAttribute(string role)
+    public RoleAuthorizeAttribute(string roles)
     {
-        _role = role;
+        _roles = roles.Split(',')
+                      .Select(r => r.Trim().ToLower())
+                      .ToArray();
     }
 
     public void OnAuthorization(AuthorizationFilterContext context)
@@ -20,15 +22,26 @@ public class RoleAuthorizeAttribute : Attribute, IAuthorizationFilter
 
         if (!user.Identity!.IsAuthenticated)
         {
-            context.Result = new UnauthorizedResult(); // 401
+            context.Result = new UnauthorizedResult();
             return;
         }
 
-        var role = user.FindFirst(ClaimTypes.Role)?.Value;
+        var roleClaim = user.Claims.FirstOrDefault(c =>
+            c.Type.Equals("role", StringComparison.OrdinalIgnoreCase) ||
+            c.Type.Equals(ClaimTypes.Role, StringComparison.OrdinalIgnoreCase)
+        );
 
-        if (role == null || !_role.Contains(role))
+        if (roleClaim == null)
         {
-            context.Result = new ForbidResult(); // 403
+            context.Result = new ForbidResult();
+            return;
+        }
+
+        var userRole = roleClaim.Value.ToLower();
+
+        if (!_roles.Contains(userRole))
+        {
+            context.Result = new ForbidResult();
             return;
         }
     }
