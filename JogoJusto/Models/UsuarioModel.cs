@@ -22,9 +22,5 @@ public class UsuarioModel
     [Column("TIPO")]
     public string Tipo { get; set; }
 
-
-
-
-
 }
 
