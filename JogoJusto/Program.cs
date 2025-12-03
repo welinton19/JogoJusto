@@ -47,11 +47,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+
 builder.Services.AddScoped<IDiversidadeService, DiversidadeService>();
+
 builder.Services.AddScoped<IEsgLogRepository, EsgLogRepository>();
 builder.Services.AddScoped<IEsgLogService, EsgLogService>();
+
+builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
+builder.Services.AddScoped<IEmpresaService, EmpresaService>();
+
+builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();      
+builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
+
+builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
+
+builder.Services.AddScoped<IDesenvolvimentoRepository, DesenvolvimentoRepository>();
+builder.Services.AddScoped<IDesenvolvimentoService, DesenvolvimentoService>();
+
+builder.Services.AddScoped<IMetaEsgRepository, MetaEsgRepository>();
+builder.Services.AddScoped<IMetaEsgService, MetaEsgService>();
+
 
 builder.Services.AddDbContext<JogoJustoDbContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("JogoJustoConnection")));
