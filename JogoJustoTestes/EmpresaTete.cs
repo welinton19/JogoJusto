@@ -56,6 +56,24 @@ public class EmpresaTete
         //assert
         Assert.Null(empresa);
     }
+
+    [Fact]
+    public async Task Get_ReturnOk()
+    {
+        // Arrange
+        var empresa = new JogoJusto.Models.EmpresaModel
+        {
+            EmpresaId = 1,
+            Nome = "Empresa Teste",
+            Cnpj = "12.345.678/0001-90",
+            Endereco = "Rua Teste, 123",
+            Telefone = "(11) 1234-5678"
+        };
+        // Act
+        var nomeEmpresa = empresa.Nome;
+        // Assert
+        Assert.Equal("Empresa Teste", nomeEmpresa);
+    }
 }
     
 

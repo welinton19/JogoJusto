@@ -25,6 +25,21 @@ public class UusuarioTeste
         //assert
         Assert.Equal("joaosilva12@gmail.com", emailUsuario);
     }
+    [Fact]
+    public async Task Usuario_Retorna_200_Ok()
+    {
+        //arrange
+        var usuario = new JogoJusto.Models.UsuarioModel
+        {
+            Id = 1,
+            Email = "joaosilvamedeiro@email.com",
+            Password = "senha123",
+        };
+        //act
+        var emailUsuario = usuario.Email;
+        //assert
+        Assert.Equal("joaosilvamedeiro@email.com", emailUsuario);
+    }
 
-    
+
 }

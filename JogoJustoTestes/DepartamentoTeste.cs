@@ -1,4 +1,9 @@
-﻿using System;
+﻿using JogoJusto.Controllers;
+using JogoJusto.Pagination;
+using JogoJusto.Service;
+using JogoJusto.ViewModel;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -80,4 +85,7 @@ public class DepartamentoTeste
         //assert
         Assert.Equal("Empresa Teste", departamentoEmpresaNome);
     }
+
+    
 }
+
