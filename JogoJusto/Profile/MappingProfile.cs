@@ -7,11 +7,9 @@ public class MappingProfile : AutoMapper.Profile
 {
     public MappingProfile()
     {
-        CreateMap<Models.UsuarioModel, ViewModel.UsuarioViewModel>().ReverseMap();
+        CreateMap<UsuarioModel, UsuarioViewModel>().ReverseMap();
 
-        CreateMap<Models.EsgLogModel, ViewModel.EsgLogViewModel>().ReverseMap();
-
-        //CreateMap<Models.TokenModel, ViewModel.TokenViewModel>().ReverseMap();
+        CreateMap<EsgLogModel, EsgLogViewModel>().ReverseMap();
 
         CreateMap<FuncionarioModel, FuncionarioViewModel>().ReverseMap();
         CreateMap<FuncionarioCreateViewModel, FuncionarioModel>();
@@ -81,18 +79,5 @@ public class MappingProfile : AutoMapper.Profile
                 });
             });
 
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
 }

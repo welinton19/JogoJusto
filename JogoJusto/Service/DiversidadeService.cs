@@ -116,7 +116,7 @@ namespace JogoJusto.Service
             };
         }
 
-        public async Task<InsightsResponseDTO> GerarInsightsAsync()
+        public async Task<PagedResult<InsightDTO>> GerarInsightsAsync(int pageNumber, int pageSize)
         {
             var funcionarios = await _ctx.Funcionario
                 .Include(f => f.Departamento)
@@ -199,10 +199,21 @@ namespace JogoJusto.Service
                 }
             }
 
-            return new InsightsResponseDTO
+            int totalCount = insights.Count;
+
+            var items = insights
+                   .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+
+            return new PagedResult<InsightDTO>
             {
-                Insights = insights
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
             };
+
         }
 
         public async Task<PagedResult<RankingDiversidadeDTO>> GerarRankingAsync(int pageNumber, int pageSize)
@@ -273,7 +284,7 @@ namespace JogoJusto.Service
             };
         }
 
-        public async Task<TreinamentosResponseDTO> GerarTreinamentosAsync()
+        public async Task<PagedResult<TreinamentoDTO>> GerarTreinamentosAsync(int pageNumber, int pageSize)
         {
 
             var funcionarios = await _ctx.Funcionario
@@ -391,10 +402,21 @@ namespace JogoJusto.Service
                 });
             }
 
-            return new TreinamentosResponseDTO
+            int totalCount = treinamentos.Count;
+
+            var items = treinamentos
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedResult<TreinamentoDTO>
             {
-                Treinamentos = treinamentos
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
             };
+           
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using JogoJusto.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JogoJusto.Controllers;
@@ -15,7 +16,7 @@ public class DashboardController : ControllerBase
     }
 
     [HttpGet("inteligente")]
-
+    [Authorize]
     public async Task<IActionResult> ObterDashboard()
     {
         var result = await _analyticsService.GerarDashboardInteligenteAsync();

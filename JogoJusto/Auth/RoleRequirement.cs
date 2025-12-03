@@ -4,9 +4,13 @@ namespace JogoJusto.Auth;
 
 public class RoleRequirement : IAuthorizationRequirement
 {
-    public string Role { get; }
-    public RoleRequirement(string role)
+    public string[] Roles { get; }
+
+    public RoleRequirement(string roles)
     {
-        Role = role;
+        Roles = roles.Split(",")
+                     .Select(r => r.Trim())
+                     .Where(r => !string.IsNullOrWhiteSpace(r))
+                     .ToArray();
     }
 }

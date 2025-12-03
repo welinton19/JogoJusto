@@ -1,4 +1,4 @@
-﻿using JogoJusto.Auth;
+﻿using JogoJusto.Atributtes;
 using JogoJusto.Pagination;
 using JogoJusto.Service;
 using JogoJusto.ViewModel;
@@ -13,9 +13,6 @@ public class UsuarioController : ControllerBase
 {
     private readonly IUsuarioService _service;
     private readonly ITokenService _tokenService;
-    
-
-    
 
     public UsuarioController(IUsuarioService service, ITokenService tokenService)
     {
@@ -24,14 +21,13 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost("criar")]
+    [Authorize]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> CriarUsuario([FromBody] UsuarioCreateViewModel usuario)
     {
         await _service.CriarUsuario(usuario.Tipo, usuario.Email, usuario.Password);
         return Ok("Usuário criado com sucesso.");
     }
-
-
-
 
     [HttpPost("login")]
     public IActionResult Login([FromBody] UsuarioLoginViewModel model)
@@ -48,13 +44,11 @@ public class UsuarioController : ControllerBase
             message = "Login realizado com sucesso",
             token
         });
-        
     }
 
-
-
-
     [HttpGet]
+    [Authorize]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> GetUsuarios([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetUsuariosAsync(qp.PageNumber, qp.PageSize);

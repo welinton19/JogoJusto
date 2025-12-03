@@ -20,7 +20,7 @@ public class MetaEsgController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> Criar([FromBody] MetaEsgCreateViewModel vm)
     {
         await _service.CreateAsync(vm);
@@ -29,7 +29,7 @@ public class MetaEsgController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> Atualizar(int id, [FromBody] MetaEsgUpdateViewModel vm)
     {
         if (id != vm.IdMetaEsg)
@@ -41,7 +41,7 @@ public class MetaEsgController : ControllerBase
 
     [HttpGet("{id}")]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> GetById(int id)
     {
         var meta = await _service.GetByIdAsync(id);
@@ -50,7 +50,6 @@ public class MetaEsgController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);
@@ -72,7 +71,7 @@ public class MetaEsgController : ControllerBase
 
     [HttpDelete("{id}")]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         await _service.DeleteAsync(id);

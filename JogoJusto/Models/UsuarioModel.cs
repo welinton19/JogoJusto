@@ -6,11 +6,6 @@ namespace JogoJusto.Models;
 [Table("T_USUARIO")]
 public class UsuarioModel
 {
-
-
-
-
-
     [Key]
     [Column("ID_USUARIO")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,10 +21,6 @@ public class UsuarioModel
 
     [Column("TIPO")]
     public string Tipo { get; set; }
-
-
-
-
 
 }
 

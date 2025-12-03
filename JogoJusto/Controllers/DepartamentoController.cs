@@ -20,7 +20,7 @@ public class DepartamentoController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> Atualizar(int id, [FromBody] DepartamentoUpdateViewModel vm)
     {
         if (id != vm.IdDepartamento)
@@ -32,7 +32,7 @@ public class DepartamentoController : ControllerBase
 
     [HttpGet("{id}")]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
+    [RoleAuthorize("Admin")]
     public async Task<IActionResult> GetById(int id)
     {
         var dept = await _service.GetByIdAsync(id);
@@ -41,7 +41,6 @@ public class DepartamentoController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    [RoleAuthorize("Admin-only")]
     public async Task<IActionResult> GetAll([FromQuery] QueryParameters qp)
     {
         var result = await _service.GetAllAsync(qp.PageNumber, qp.PageSize);

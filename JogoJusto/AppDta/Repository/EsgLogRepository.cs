@@ -1,29 +1,40 @@
-﻿namespace JogoJusto.AppDta.Repository;
+﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
+using Microsoft.EntityFrameworkCore;
 
-public class EsgLogRepository : IEsgLogRepository
+namespace JogoJusto.AppDta.Repository
 {
-
-    private readonly JogoJustoDbContext _jogodbcontext;
-
-    public EsgLogRepository(JogoJustoDbContext jogodbcontext)
+    public class EsgLogRepository : IEsgLogRepository
     {
-        _jogodbcontext = jogodbcontext;
-    }
+        private readonly JogoJustoDbContext _jogodbcontext;
 
-    public void CriarEsLog(object esgLog)
-    {
-        _jogodbcontext.EsgLogModel.Add((Models.EsgLogModel)esgLog);
-        _jogodbcontext.SaveChanges();
-    }
+        public EsgLogRepository(JogoJustoDbContext jogodbcontext)
+        {
+            _jogodbcontext = jogodbcontext;
+        }
 
-    public void DeleteEsLogs()
-    {
-        _jogodbcontext.EsgLogModel.RemoveRange(_jogodbcontext.EsgLogModel);
-    }
+        public async Task<PagedResult<EsgLogModel>> GetEsgLogsAsync(int pageNumber, int pageSize)
+        {
+            //var query = _jogodbcontext.EsgLogModel.AsQueryable();
 
-    public void GetEsLogs()
-    {
-        _jogodbcontext.EsgLogModel.ToList();
+            var query = _jogodbcontext.EsgLogModel
+          .Include(e => e.Departamento)
+              .ThenInclude(d => d.Empresa)
+          .AsQueryable();
 
+            int total = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(e => e.DataAcao)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<EsgLogModel>
+            {
+                Items = items,
+                TotalCount = total
+            };
+        }
     }
 }

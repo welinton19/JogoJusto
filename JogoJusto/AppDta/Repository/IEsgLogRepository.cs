@@ -1,8 +1,10 @@
-﻿namespace JogoJusto.AppDta.Repository;
+﻿using JogoJusto.Models;
+using JogoJusto.Pagination;
+
+namespace JogoJusto.AppDta.Repository;
 
 public interface IEsgLogRepository
 {
-    void CriarEsLog(object esgLog);
-    void GetEsLogs();
-    void DeleteEsLogs();
+    Task<PagedResult<EsgLogModel>> GetEsgLogsAsync(int pageNumber, int pageSize);
+
 }

@@ -1,3 +1,5 @@
+using System.Text;
+using FluentValidation;
 using JogoJusto.AppDta;
 using JogoJusto.AppDta.Repository;
 using JogoJusto.Auth;
@@ -7,11 +9,9 @@ using JogoJusto.ViewModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Services.AddControllers();
 
@@ -25,14 +25,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
-builder.Services.AddAuthorization(options => 
-{
-    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User", "Admin"));
-});
-
-// JWT
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 
@@ -53,15 +45,33 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Services
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+
 builder.Services.AddScoped<IDiversidadeService, DiversidadeService>();
 
+builder.Services.AddScoped<IEsgLogRepository, EsgLogRepository>();
+builder.Services.AddScoped<IEsgLogService, EsgLogService>();
 
-// DB Context
+builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
+builder.Services.AddScoped<IEmpresaService, EmpresaService>();
+
+builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();      
+builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
+
+builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
+
+builder.Services.AddScoped<IDesenvolvimentoRepository, DesenvolvimentoRepository>();
+builder.Services.AddScoped<IDesenvolvimentoService, DesenvolvimentoService>();
+
+builder.Services.AddScoped<IMetaEsgRepository, MetaEsgRepository>();
+builder.Services.AddScoped<IMetaEsgService, MetaEsgService>();
+
+
 builder.Services.AddDbContext<JogoJustoDbContext>(options =>
     options.UseOracle(builder.Configuration.GetConnectionString("JogoJustoConnection")));
 

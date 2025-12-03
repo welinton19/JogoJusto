@@ -6,8 +6,8 @@ namespace JogoJusto.Service
     public interface IDiversidadeService
     {
         Task<DiversidadeDTO> GerarIndicadoresAsync(int pageNumber, int pageSize);
-        Task<InsightsResponseDTO> GerarInsightsAsync();
+        Task<PagedResult<InsightDTO>> GerarInsightsAsync(int pageNumber, int pageSize);
         Task <PagedResult<RankingDiversidadeDTO>> GerarRankingAsync(int pageNumber, int pageSize);
-        Task<TreinamentosResponseDTO> GerarTreinamentosAsync();
+        Task <PagedResult<TreinamentoDTO>> GerarTreinamentosAsync(int pageNumber, int pageSize);
     }
 }
