@@ -1,0 +1,23 @@
+﻿name: Continuous Integration Jogo Justo
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code 
+    - uses: actions/checkout@v2
+  
+    - name: setup dotnet sdk
+    - uses: actions/setup-dotnet@v1
+      with:
+        distribuition: 'ubuntu'
+        dotnet-version: 8.0.x
+
+    - name: unit tests
+    - run:  xunity test -projectPath ./JogoJusto/Assets/Tests -testPlatform playmode -batchmode -nographics -logFile

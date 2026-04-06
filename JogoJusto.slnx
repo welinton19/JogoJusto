@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path="docker-compose.yml" />
+  </Folder>
   <Project Path="JogoJusto/JogoJusto.csproj" />
   <Project Path="JogoJustoTestes/JogoJustoTestes.csproj" Id="5f8633dc-bf57-48dd-a346-1937a949d6fd" />
 </Solution>

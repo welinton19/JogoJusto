@@ -1,0 +1,17 @@
+
+services:
+    jogojusto-api:
+        container_name: jogojusto-api
+        build: 
+            context: .
+            dockerfile: jogojusto/Dockerfile
+        ports:
+            - "5000:8080"
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_URLS=http://+:8080
+            - DOTNET_USE_POLLING_FILE_WATCHER=true
+            - NUGET_PACKAGES=/root/.nuget/packages
+        restart: always
+        volumes:
+            - ./jogojusto-api:/app
