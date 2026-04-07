@@ -1,9 +1,9 @@
 
 services:
     jogojusto-api:
-        container_name: jogojusto-api
+        container_name: jogojusto
         build: 
-            context: .
+            context: ./JogoJusto
             dockerfile: ./jogojusto/Dockerfile
         ports:
             - "5000:8080"
@@ -14,4 +14,4 @@ services:
             - NUGET_PACKAGES=/root/.nuget/packages
         restart: always
         volumes:
-            - ./jogojusto-api:/app
+            - ./jogojusto:/app
