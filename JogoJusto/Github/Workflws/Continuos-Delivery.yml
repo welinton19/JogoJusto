@@ -1,51 +1,44 @@
-﻿name: Continuos Delivery
+﻿name: Continuous Delivery
 
 on:
-    push:
-        branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-  
-            - name: Build and Deploy
-              uses: docker/build-push-action@v2
+  build-and-push:
+    runs-on: ubuntu-latest
 
-            - name: Build and Deploy
-              uses: docker/build-push-action@v2
+    permissions:
+      contents: read
+      packages: write
 
-            - name: Login in to DockerHub
-              uses: docker/login-action@v1
-              with:
-                registry: https://index.docker.io/v1/
-                username: ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ${{ secrets.DOCKERHUB_TOKEN }} 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-            - name: Build and push Docker image
-              uses: docker/build-push-action@v5
-              with:
-              context: ./JogoJusto
-              file: ./JogoJusto/Dockerfile
-              push: true
-              tags: ghcr.io/welinton19/jogojusto:master
-                
-        
-        deploy:
-            runs-on: ubuntu-latest
-            needs: build
-            environment:
-                name: production
-                url: ${{ steps.deploy.outputs.web_url }}
+      - name: Login no GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-        step:
-            - name: Deploy to Azure Web App
-              id: deploy
-              uses: azure/webapps-deploy@v2
-              with:
-                app-name: jogojusto-dev
-                slot-name: production
-                publisher-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-                images: ${{ secrets.DOCKERHUB_USERNAME }}/jogojusto:latest
-              
+      - name: Build e Push da imagem
+        uses: docker/build-push-action@v5
+        with:
+          context: ./JogoJusto
+          file: ./JogoJusto/Dockerfile
+          push: true
+          tags: ghcr.io/welinton19/jogojusto:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: Deploy para Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: jogojusto-dev
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          images: ghcr.io/welinton19/jogojusto:latest
