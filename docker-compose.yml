@@ -4,7 +4,7 @@ services:
         container_name: jogojusto
         build: 
             context: ./JogoJusto
-            dockerfile: ./jogojusto/Dockerfile
+            dockerfile: ./JogoJusto/Dockerfile
         ports:
             - "5000:8080"
         environment:
