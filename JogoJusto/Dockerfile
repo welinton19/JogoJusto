@@ -8,9 +8,8 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["JogoJusto.csproj", "."]
 RUN dotnet restore "./JogoJusto.csproj"
-...
-WORKDIR "/src"
-RUN dotnet build "./JogoJusto.csproj" ...
+COPY . .
+RUN dotnet build "./JogoJusto.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
