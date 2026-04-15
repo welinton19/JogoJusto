@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <None Include=".github\workflows\Continuos-Delivery.yml" />
-    <None Include=".github\workflows\Continuos-Integrations.yml" />
   </ItemGroup>
 
   <ItemGroup>

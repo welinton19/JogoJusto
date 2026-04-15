@@ -24,16 +24,16 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restaurar dependências
-        run: dotnet restore ./JogoJusto/JogoJusto.sln || dotnet restore ./JogoJusto/JogoJusto/JogoJusto.csproj
+        run: dotnet restore ./JogoJusto/JogoJusto.csproj
 
       - name: Build da aplicação
-        run: dotnet build ./JogoJusto/JogoJusto/JogoJusto.csproj --configuration Release --no-restore
+        run: dotnet build ./JogoJusto/JogoJusto.csproj --configuration Release --no-restore
 
       - name: Executar testes
-        run: dotnet test ./JogoJusto/JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --no-build --verbosity normal
+        run: dotnet test ./JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --verbosity normal
 
   # ─────────────────────────────────────────────
-  # JOB 2: Build e Push da imagem Docker (Staging)
+  # JOB 2: Deploy Staging
   # ─────────────────────────────────────────────
   docker-staging:
     name: Deploy Staging
@@ -52,16 +52,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build e Push da imagem (Staging)
+      - name: Build e Push - Staging
         uses: docker/build-push-action@v5
         with:
-          context: ./JogoJusto          
+          context: ./JogoJusto
           file: ./JogoJusto/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/jogojusto:staging
 
   # ─────────────────────────────────────────────
-  # JOB 3: Deploy Produção (somente após staging)
+  # JOB 3: Deploy Produção
   # ─────────────────────────────────────────────
   docker-production:
     name: Deploy Produção
@@ -80,7 +80,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build e Push da imagem (Produção)
+      - name: Build e Push - Produção
         uses: docker/build-push-action@v5
         with:
           context: ./JogoJusto
