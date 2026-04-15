@@ -89,3 +89,10 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/jogojusto:latest
             ghcr.io/${{ github.repository_owner }}/jogojusto:${{ github.sha }}
+
+      - name: Deploy no Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'jogojusto-api'
+          images: 'ghcr.io/${{ github.repository_owner }}/jogojusto:latest'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
