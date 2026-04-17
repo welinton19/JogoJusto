@@ -94,5 +94,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'jogojusto-api'
-          images: 'ghcr.io/${{ github.repository_owner }}/jogojusto:latest'
+          images: 'ghcr.io/${{ github.repository_owner }}/jogojusto:latest:${{ github.sha }}'
           publish-profile: ${{ secrets.AZURE_PROFILE }}
