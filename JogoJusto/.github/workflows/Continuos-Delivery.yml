@@ -33,66 +33,39 @@ jobs:
         run: dotnet test ./JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --verbosity normal
 
   # ─────────────────────────────────────────────
-  # JOB 2: Deploy Staging
-  # ─────────────────────────────────────────────
-  docker-staging:
-    name: Deploy Staging
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    
-
-    steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
-
-      - name: Login no GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build e Push - Staging
-        uses: docker/build-push-action@v5
-        with:
-          context: ./JogoJusto
-          file: ./JogoJusto/Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository_owner }}/jogojusto:staging
-
-  # ─────────────────────────────────────────────
-  # JOB 3: Deploy Produção
+  # JOB 2: Deploy Produção (Docker Hub + Azure)
   # ─────────────────────────────────────────────
   docker-production:
     name: Deploy Produção
     runs-on: ubuntu-latest
-    needs: docker-staging
-    
+    needs: build-and-test
 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: Login no GitHub Container Registry
+      # 🔴 LOGIN NO DOCKER HUB (NOVO)
+      - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build e Push - Produção
+      # 🔴 BUILD E PUSH PARA DOCKER HUB
+      - name: Build e Push - Docker Hub
         uses: docker/build-push-action@v5
         with:
           context: ./JogoJusto
           file: ./JogoJusto/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/jogojusto:latest
-            ghcr.io/${{ github.repository_owner }}/jogojusto:${{ github.sha }}
+            welinton19/jogojusto:latest
+            welinton19/jogojusto:${{ github.sha }}
 
+      # 🔴 DEPLOY NO AZURE USANDO DOCKER HUB
       - name: Deploy no Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'jogojusto-api'
-          images: 'ghcr.io/${{ github.repository_owner }}/jogojusto:${{ github.sha }}'
+          images: 'welinton19/jogojusto:${{ github.sha }}'
           publish-profile: ${{ secrets.AZURE_PROFILE }}
