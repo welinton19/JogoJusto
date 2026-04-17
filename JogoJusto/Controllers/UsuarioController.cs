@@ -21,8 +21,7 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpPost("criar")]
-    [Authorize]
-    [RoleAuthorize("Admin")]
+    [AllowAnonymous]
     public async Task<IActionResult> CriarUsuario([FromBody] UsuarioCreateViewModel usuario)
     {
         await _service.CriarUsuario(usuario.Tipo, usuario.Email, usuario.Password);

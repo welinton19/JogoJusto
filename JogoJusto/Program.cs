@@ -21,6 +21,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<UsuarioCreateViewModelValid
 
 
 builder.Services.AddEndpointsApiExplorer();
+<<<<<<< HEAD
 //builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(c =>
@@ -49,6 +50,28 @@ builder.Services.AddSwaggerGen(c =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
+=======
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Insira o token JWT"
+    });
+
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+>>>>>>> 646ea18b93e3be0c654fcc27bab1519f98b46d95
                     Id = "Bearer"
                 }
             },
@@ -118,11 +141,8 @@ var app = builder.Build();
 
 app.UseMiddleware<ErrorHanddlerMiddleware>();
 
-if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Environment.IsProduction())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseAuthentication();
 app.UseAuthorization();
