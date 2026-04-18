@@ -30,7 +30,7 @@ jobs:
         run: dotnet build ./JogoJusto/JogoJusto.csproj --configuration Release --no-restore
 
       - name: Executar testes
-        run: dotnet test ./JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --no-build --verbosity normal
+        run: dotnet test ./JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --verbosity normal
 
   # ─────────────────────────────────────────────
   # JOB 2: Build e Push da imagem Docker (Staging)
