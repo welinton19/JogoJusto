@@ -18,6 +18,10 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+
+      - name: Listar arquivos de projeto #debugando
+        run: find . -name "*.sln" -o -name "*.csproj" | head -20
+        
       - name: Configurar .NET 8
         uses: actions/setup-dotnet@v4
         with:
