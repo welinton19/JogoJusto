@@ -1,11 +1,11 @@
 ﻿name: CI/CD - JogoJusto
-
+ 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
+ 
 jobs:
   # ─────────────────────────────────────────────
   # JOB 1: Build + Testes
@@ -13,46 +13,72 @@ jobs:
   build-and-test:
     name: Build e Testes
     runs-on: ubuntu-latest
-
+ 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
+ 
       - name: Configurar .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
+ 
       - name: Restaurar dependências
         run: dotnet restore ./JogoJusto/JogoJusto.csproj
-
+ 
       - name: Build da aplicação
         run: dotnet build ./JogoJusto/JogoJusto.csproj --configuration Release --no-restore
-
+ 
       - name: Executar testes
         run: dotnet test ./JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --verbosity normal
-
+ 
   # ─────────────────────────────────────────────
-  # JOB 2: Deploy Produção (Docker Hub + Azure)
+  # JOB 2: Staging (Docker Hub)
   # ─────────────────────────────────────────────
-  docker-production:
-    name: Deploy Produção
+  docker-staging:
+    name: Deploy Staging
     runs-on: ubuntu-latest
     needs: build-and-test
-
+    if: github.ref == 'refs/heads/master'
+ 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
-      # 🔴 LOGIN NO DOCKER HUB (NOVO)
+ 
       - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      # 🔴 BUILD E PUSH PARA DOCKER HUB
-      - name: Build e Push - Docker Hub
+ 
+      - name: Build e Push - Staging
+        uses: docker/build-push-action@v5
+        with:
+          context: ./JogoJusto
+          file: ./JogoJusto/Dockerfile
+          push: true
+          tags: welinton19/jogojusto:staging
+ 
+  # ─────────────────────────────────────────────
+  # JOB 3: Produção (Docker Hub + Azure)
+  # ─────────────────────────────────────────────
+  docker-production:
+    name: Deploy Produção
+    runs-on: ubuntu-latest
+    needs: docker-staging
+    if: github.ref == 'refs/heads/master'
+ 
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+ 
+      - name: Login no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+ 
+      - name: Build e Push - Produção
         uses: docker/build-push-action@v5
         with:
           context: ./JogoJusto
@@ -61,11 +87,10 @@ jobs:
           tags: |
             welinton19/jogojusto:latest
             welinton19/jogojusto:${{ github.sha }}
-
-      # 🔴 DEPLOY NO AZURE USANDO DOCKER HUB
+ 
       - name: Deploy no Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'jogojusto-api'
+          app-name: 'jogojusto-dev'
           images: 'welinton19/jogojusto:${{ github.sha }}'
           publish-profile: ${{ secrets.AZURE_PROFILE }}
