@@ -10,7 +10,6 @@ Welinton Gomes Batista - 559512<br>
 **Turma:** 2TDSOS<br>
 **Curso:** Análise e Desenvolvimento de Sistemas - FIAP<br>
 
-
 ---
 
 ## Sobre o projeto
@@ -181,13 +180,19 @@ networks:
 
 ## Prints do funcionamento
 
-> _(Adicione aqui os prints ou links de evidência após a execução do pipeline)_
 
-- Print do pipeline rodando no GitHub Actions (build, testes, deploy)
-- Print da imagem publicada no GHCR com as tags `:staging`, `:latest` e `:<sha>`
+- Prints do pipeline rodando no GitHub Actions (build, testes, deploy)
+![Pipeline build e testes](docs/pipeline-build-pull-request.png)
+![Pipeline build e testes](docs/pipeline-build-push.png)
+
+- Print da imagem publicada no GHCR 
+![Deploy staging e produção](docs/imagem-publicada.png)
+
 - Print do `docker-compose up` rodando localmente
-- Print do `docker inspect` mostrando volumes e networks configurados
+![Docker Compose up](docs/docker-compose-rodando.png)
 
+- Print do `docker inspect` mostrando volumes e networks configurados
+![Docker Inspect](docs/docker-inspect.png)
 ---
 
 ## Tecnologias utilizadas
@@ -208,10 +213,10 @@ networks:
 
 | Item | Status |
 |---|---|
-| Projeto compactado em .ZIP com estrutura organizada | ☐ |
+| Projeto compactado em .ZIP com estrutura organizada | ✅ |
 | Dockerfile funcional | ✅ |
 | docker-compose.yml com volumes e networks | ✅ |
 | Pipeline com etapas de build, teste e deploy | ✅ |
 | README.md com instruções e prints | ✅ |
-| Documentação técnica com evidências (PDF ou PPT) | ☐ |
+| Documentação técnica com evidências (PDF ou PPT) | ✅ |
 | Deploy realizado nos ambientes staging e produção | ✅ |

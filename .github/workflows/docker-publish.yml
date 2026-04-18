@@ -53,13 +53,13 @@ jobs:
       - name: Build e Push - Staging
         uses: docker/build-push-action@v5
         with:
-          context: ./JogoJusto          # raiz que contém a pasta JogoJusto/
+          context: ./JogoJusto          
           file: ./JogoJusto/Dockerfile
           push: true
           tags: welinton19/jogojusto:staging
  
   # ─────────────────────────────────────────────
-  # JOB 3: Produção (Docker Hub + Azure)
+  # JOB 3: Produção (Docker Hub)
   # ─────────────────────────────────────────────
   docker-production:
     name: Deploy Produção
@@ -86,9 +86,4 @@ jobs:
             welinton19/jogojusto:latest
             welinton19/jogojusto:${{ github.sha }}
  
-      - name: Deploy no Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'jogojusto-dev'
-          images: 'welinton19/jogojusto:${{ github.sha }}'
-          publish-profile: ${{ secrets.AZURE_PROFILE }}
+
