@@ -17,24 +17,20 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
-
-      - name: Listar arquivos de projeto #debugando
-        run: find . -name "*.sln" -o -name "*.csproj" | head -20
-        
+          
       - name: Configurar .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
 
       - name: Restaurar dependências
-        run: dotnet restore ./JogoJusto/JogoJusto.sln || dotnet restore ./JogoJusto/JogoJusto/JogoJusto.csproj
+        run: dotnet restore ./JogoJusto/JogoJusto.csproj
 
       - name: Build da aplicação
-        run: dotnet build ./JogoJusto/JogoJusto/JogoJusto.csproj --configuration Release --no-restore
+        run: dotnet build ./JogoJusto/JogoJusto.csproj --configuration Release --no-restore
 
       - name: Executar testes
-        run: dotnet test ./JogoJusto/JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --no-build --verbosity normal
+        run: dotnet test ./JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --no-build --verbosity normal
 
   # ─────────────────────────────────────────────
   # JOB 2: Build e Push da imagem Docker (Staging)
@@ -59,8 +55,8 @@ jobs:
       - name: Build e Push da imagem (Staging)
         uses: docker/build-push-action@v5
         with:
-          context: ./JogoJusto          # raiz que contém a pasta JogoJusto/
-          file: ./JogoJusto/JogoJusto/Dockerfile
+          context: .          # raiz que contém a pasta JogoJusto/
+          file: ./JogoJusto/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/jogojusto:staging
 
@@ -87,8 +83,8 @@ jobs:
       - name: Build e Push da imagem (Produção)
         uses: docker/build-push-action@v5
         with:
-          context: ./JogoJusto
-          file: ./JogoJusto/JogoJusto/Dockerfile
+          context: .
+          file: ./JogoJusto/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/jogojusto:latest
