@@ -54,7 +54,7 @@ jobs:
       - name: Build e Push da imagem (Staging)
         uses: docker/build-push-action@v5
         with:
-          context: .          # raiz que contém a pasta JogoJusto/
+          context: ./JogoJusto          # raiz que contém a pasta JogoJusto/
           file: ./JogoJusto/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/jogojusto:staging
@@ -81,7 +81,7 @@ jobs:
       - name: Build e Push da imagem (Produção)
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./JogoJusto
           file: ./JogoJusto/Dockerfile
           push: true
           tags: |
