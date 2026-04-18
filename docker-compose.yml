@@ -7,7 +7,18 @@ services:
     ports:
       - "5000:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__JogoJustoConnection=User Id=RM560036;Password=210989;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=oracle.fiap.com.br)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl)));Persist Security Info=True;
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ConnectionStrings__JogoJustoConnection=${DB_CONNECTION_STRING}
+    volumes:
+      - jogojusto-logs:/app/logs
+    networks:
+      - jogojusto-net
     restart: always
+
+volumes:
+  jogojusto-logs:
+
+networks:
+    jogojusto-net:
+      driver: bridge    
