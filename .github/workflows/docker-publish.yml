@@ -1,11 +1,11 @@
 name: CI/CD - JogoJusto
-
+ 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
-
+    branches: [ master ]
+ 
 jobs:
   # ─────────────────────────────────────────────
   # JOB 1: Build + Testes
@@ -13,79 +13,84 @@ jobs:
   build-and-test:
     name: Build e Testes
     runs-on: ubuntu-latest
-
+ 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
+ 
       - name: Configurar .NET 8
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
+ 
       - name: Restaurar dependências
-        run: dotnet restore ./JogoJusto/JogoJusto.sln || dotnet restore ./JogoJusto/JogoJusto/JogoJusto.csproj
-
+        run: dotnet restore ./JogoJusto/JogoJusto.csproj
+ 
       - name: Build da aplicação
-        run: dotnet build ./JogoJusto/JogoJusto/JogoJusto.csproj --configuration Release --no-restore
-
+        run: dotnet build ./JogoJusto/JogoJusto.csproj --configuration Release --no-restore
+ 
       - name: Executar testes
-        run: dotnet test ./JogoJusto/JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --no-build --verbosity normal
-
+        run: dotnet test ./JogoJustoTestes/JogoJustoTestes.csproj --configuration Release --verbosity normal
+ 
   # ─────────────────────────────────────────────
-  # JOB 2: Build e Push da imagem Docker (Staging)
+  # JOB 2: Staging (Docker Hub)
   # ─────────────────────────────────────────────
   docker-staging:
     name: Deploy Staging
     runs-on: ubuntu-latest
     needs: build-and-test
-    if: github.ref == 'refs/heads/main'
-
+    if: github.ref == 'refs/heads/master'
+ 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
-      - name: Login no GitHub Container Registry
+ 
+      - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build e Push da imagem (Staging)
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+ 
+      - name: Build e Push - Staging
         uses: docker/build-push-action@v5
         with:
-          context: ./JogoJusto          # raiz que contém a pasta JogoJusto/
-          file: ./JogoJusto/JogoJusto/Dockerfile
+          context: ./JogoJusto
+          file: ./JogoJusto/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/jogojusto:staging
-
+          tags: welinton19/jogojusto:staging
+ 
   # ─────────────────────────────────────────────
-  # JOB 3: Deploy Produção (somente após staging)
+  # JOB 3: Produção (Docker Hub + Azure)
   # ─────────────────────────────────────────────
   docker-production:
     name: Deploy Produção
     runs-on: ubuntu-latest
     needs: docker-staging
-    if: github.ref == 'refs/heads/main'
-
+    if: github.ref == 'refs/heads/master'
+ 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
-
-      - name: Login no GitHub Container Registry
+ 
+      - name: Login no Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build e Push da imagem (Produção)
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+ 
+      - name: Build e Push - Produção
         uses: docker/build-push-action@v5
         with:
           context: ./JogoJusto
-          file: ./JogoJusto/JogoJusto/Dockerfile
+          file: ./JogoJusto/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/jogojusto:latest
-            ghcr.io/${{ github.repository_owner }}/jogojusto:${{ github.sha }}
+            welinton19/jogojusto:latest
+            welinton19/jogojusto:${{ github.sha }}
+ 
+      - name: Deploy no Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'jogojusto-dev'
+          images: 'welinton19/jogojusto:${{ github.sha }}'
+          publish-profile: ${{ secrets.AZURE_PROFILE }}
