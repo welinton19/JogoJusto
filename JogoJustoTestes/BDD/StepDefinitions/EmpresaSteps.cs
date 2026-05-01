@@ -4,7 +4,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using TechTalk.SpecFlow;
 
-namespace JogoJustoTestes.BDD.Steps;
+namespace JogoJustoTestes.BDD.StepDefinitions;
 
 [Binding]
 public class EmpresaSteps
