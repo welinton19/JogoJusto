@@ -21,6 +21,7 @@
     <PackageReference Include="SpecFlow.xUnit" Version="4.0.31-beta" />
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+	<PackageReference Include="BoDi" Version="1.5.0" />
   </ItemGroup>
 
   <ItemGroup>
