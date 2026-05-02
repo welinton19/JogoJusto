@@ -24,8 +24,8 @@ public class LoginStep
     public void DadoQueOUsuarioTemUmLoginValido()
     {
         
-        _scenarioContext["email"] = "teste8@gmail.com";
-        _scenarioContext["password"] = "Nenem123";
+        _scenarioContext["email"] = "isabella@example.com";
+        _scenarioContext["password"] = "SenhaForte123";
     }
 
     [When("enviar Email e Senha corretos")]
