@@ -21,7 +21,7 @@ public class UsuarioStep
     public void GivenDadoQueOUsuarioTemDadosValidos()
     {
         _scenarioContext["tipo"] = "Admin";
-        _scenarioContext["email"] = "testando18@gmail.com";
+        _scenarioContext["email"] = "testando20@gmail.com";
         _scenarioContext["password"] = "Jogo14725";
     }
 
