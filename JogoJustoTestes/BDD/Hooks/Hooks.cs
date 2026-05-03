@@ -19,7 +19,7 @@ public class Hooks
     {
         _client = new HttpClient()
         {
-            BaseAddress = new Uri("https://jogojusto-dev-h0e9bsesfjgkeydd.eastus2-01.azurewebsites.net/")
+           BaseAddress = new Uri("http://localhost:5000/")
         };
 
         _objectContainer.RegisterInstanceAs(_client);

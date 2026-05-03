@@ -31,15 +31,11 @@ public class MetaStep
             empresaId = int.Parse(row["empresaId"])
         });
 
-        Console.WriteLine($">>> BODY ENVIADO: {body}"); 
-
         var response = await _client.PostAsync(endpoint,
             new StringContent(body, Encoding.UTF8, "application/json"));
 
         var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine($">>> STATUS: {(int)response.StatusCode}"); 
-        Console.WriteLine($">>> RESPOSTA DA API: {content}");          
-
+      
         _scenarioContext["response"] = response;
     }
 
@@ -64,15 +60,10 @@ public class MetaStep
             
         });
 
-        Console.WriteLine($">>> PUT BODY: {body}");
-
         var response = await _client.PutAsync(endpoint,
             new StringContent(body, Encoding.UTF8, "application/json"));
 
         var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine($">>> PUT STATUS: {(int)response.StatusCode}");
-        Console.WriteLine($">>> PUT RESPOSTA: {content}");
-
         _scenarioContext["response"] = response;
     }
 
@@ -81,8 +72,6 @@ public class MetaStep
     {
         var response = await _client.GetAsync(endpoint);
         var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine($">>> GET ID Status: {(int)response.StatusCode}");
-        Console.WriteLine($">>> GET ID Body: {content}");
         _scenarioContext["response"] = response; 
     }
 
@@ -91,9 +80,6 @@ public class MetaStep
     {
         var response = await _client.DeleteAsync(endpoint);
         var content = await response.Content.ReadAsStringAsync();
-
-        Console.WriteLine($">>> DELETE Status: {(int)response.StatusCode}");
-        Console.WriteLine($">>> DELETE Body: {content}");
         _scenarioContext["response"] = response; 
     }
 

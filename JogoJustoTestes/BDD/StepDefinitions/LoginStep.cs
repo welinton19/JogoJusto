@@ -1,8 +1,7 @@
-﻿using System.Net;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using TechTalk.SpecFlow;
-using Xunit;
+
 
 namespace JogoJustoTestes.BDD.StepDefinitions;
 
@@ -11,13 +10,11 @@ public class LoginStep
 {
     private readonly ScenarioContext _scenarioContext;
     private readonly HttpClient _httpClient;
-    private HttpResponseMessage _httpMessageResponse;
 
-    public LoginStep(ScenarioContext scenarioContext)
+    public LoginStep(ScenarioContext scenarioContext, HttpClient httpClient)
     {
         _scenarioContext = scenarioContext;
-        _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri("https://jogojusto-dev-h0e9bsesfjgkeydd.eastus2-01.azurewebsites.net/");
+        _httpClient = httpClient;        
     }
 
     [Given("que o usuário tem um login válido")]
@@ -40,8 +37,8 @@ public class LoginStep
             "application/json"
         );
 
-        _httpMessageResponse = await _httpClient.PostAsync("api/usuario/login", body);
-        _scenarioContext["response"] = _httpMessageResponse;
+        var response = await _httpClient.PostAsync("api/usuario/login", body);
+        _scenarioContext["response"] = response;
     }
 
     [Then("deve receber status {int} de login com sucesso")]
@@ -76,8 +73,8 @@ public class LoginStep
             "application/json"
         );
 
-        _httpMessageResponse = await _httpClient.PostAsync("api/usuario/login", body);
-        _scenarioContext["response"] = _httpMessageResponse;
+        var response = await _httpClient.PostAsync("api/usuario/login", body);
+        _scenarioContext["response"] = response;
     }
 
     [Then("deve receber status {int} erro de login")]

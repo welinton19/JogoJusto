@@ -19,7 +19,7 @@ namespace JogoJustoTestes.BDD.Features
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "4.0.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class MetaFeature : object, Xunit.IClassFixture<MetaFeature.FixtureData>, Xunit.IAsyncLifetime
+    public partial class MetaESGFeature : object, Xunit.IClassFixture<MetaESGFeature.FixtureData>, Xunit.IAsyncLifetime
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +31,7 @@ namespace JogoJustoTestes.BDD.Features
 #line 1 "Meta.feature"
 #line hidden
         
-        public MetaFeature(MetaFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public MetaESGFeature(MetaESGFeature.FixtureData fixtureData, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -39,7 +39,7 @@ namespace JogoJustoTestes.BDD.Features
         public static async System.Threading.Tasks.Task FeatureSetupAsync()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunnerForAssembly(null, TechTalk.SpecFlow.xUnit.SpecFlowPlugin.XUnitParallelWorkerTracker.Instance.GetWorkerId());
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("pt"), "BDD/Features", "Meta", "Com o login de um Admin na plataforma jogojusto,\r\no admin tem a capacidade de cri" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("pt"), "BDD/Features", "Meta ESG", "Com o login de um Admin na plataforma jogojusto,\r\no admin tem a capacidade de cri" +
                     "ar metas para as empresas cadastradas,\r\ncom o objetivo de promover práticas sust" +
                     "entáveis e responsáveis no contexto ESG.", ProgrammingLanguage.CSharp, featureTags);
             await testRunner.OnFeatureStartAsync(featureInfo);
@@ -99,7 +99,7 @@ namespace JogoJustoTestes.BDD.Features
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Cadastrar nova meta para empresa com sucesso")]
-        [Xunit.TraitAttribute("FeatureTitle", "Meta")]
+        [Xunit.TraitAttribute("FeatureTitle", "Meta ESG")]
         [Xunit.TraitAttribute("Description", "Cadastrar nova meta para empresa com sucesso")]
         [Xunit.TraitAttribute("Category", "CriarMeta")]
         public async System.Threading.Tasks.Task CadastrarNovaMetaParaEmpresaComSucesso()
@@ -121,14 +121,14 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 await this.FeatureBackgroundAsync();
 #line hidden
-                TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "tipoMetaEsg",
                             "descricaoMetaEsg",
                             "valorReferenciaMetaEsg",
                             "valorAtualMetaEsg",
                             "prazoMetaEsg",
                             "empresaId"});
-                table2.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "Redução de Emissões",
                             "Reduzir as emissões de carbono em 20% até 2025",
                             "20",
@@ -136,7 +136,7 @@ await this.FeatureBackgroundAsync();
                             "2026-12-31T00:00:00.000Z",
                             "2"});
 #line 14
-    await testRunner.WhenAsync("ele envia uma requisição POST para criar \"/api/metaesg\" com o seguinte payload:", ((string)(null)), table2, "Quando ");
+    await testRunner.WhenAsync("ele envia uma requisição POST para criar \"/api/metaesg\" com o seguinte payload:", ((string)(null)), table3, "Quando ");
 #line hidden
 #line 17
     await testRunner.ThenAsync("ele deve receber uma resposta com status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
@@ -149,7 +149,7 @@ await this.FeatureBackgroundAsync();
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Listar metas cadastradas com sucesso")]
-        [Xunit.TraitAttribute("FeatureTitle", "Meta")]
+        [Xunit.TraitAttribute("FeatureTitle", "Meta ESG")]
         [Xunit.TraitAttribute("Description", "Listar metas cadastradas com sucesso")]
         [Xunit.TraitAttribute("Category", "ListarMetas")]
         public async System.Threading.Tasks.Task ListarMetasCadastradasComSucesso()
@@ -185,7 +185,7 @@ await this.FeatureBackgroundAsync();
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Atualizar meta existente com sucesso")]
-        [Xunit.TraitAttribute("FeatureTitle", "Meta")]
+        [Xunit.TraitAttribute("FeatureTitle", "Meta ESG")]
         [Xunit.TraitAttribute("Description", "Atualizar meta existente com sucesso")]
         [Xunit.TraitAttribute("Category", "AtualizarMeta")]
         public async System.Threading.Tasks.Task AtualizarMetaExistenteComSucesso()
@@ -207,20 +207,20 @@ this.ScenarioInitialize(scenarioInfo);
 #line 9
 await this.FeatureBackgroundAsync();
 #line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
                             "tipoMetaEsg",
                             "descricaoMetaEsg",
                             "valorAtualMetaEsg",
                             "prazoMetaEsg",
                             "empresaId"});
-                table3.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "Redução de Emissões",
                             "Reduzir as emissões de carbono em 25% até 2025",
                             "25",
                             "2026-12-31T00:00:00.000Z",
                             "2"});
 #line 28
-    await testRunner.WhenAsync("ele envia uma requisição PUT para  \"/api/metaesg/6\" com o seguinte payload:", ((string)(null)), table3, "Quando ");
+    await testRunner.WhenAsync("ele envia uma requisição PUT para  \"/api/metaesg/6\" com o seguinte payload:", ((string)(null)), table4, "Quando ");
 #line hidden
 #line 31
     await testRunner.ThenAsync("ele deve receber uma resposta com status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
@@ -233,7 +233,7 @@ await this.FeatureBackgroundAsync();
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Pesquisar meta existente por ID")]
-        [Xunit.TraitAttribute("FeatureTitle", "Meta")]
+        [Xunit.TraitAttribute("FeatureTitle", "Meta ESG")]
         [Xunit.TraitAttribute("Description", "Pesquisar meta existente por ID")]
         [Xunit.TraitAttribute("Category", "PesquisarMetaPorID")]
         public async System.Threading.Tasks.Task PesquisarMetaExistentePorID()
@@ -256,20 +256,20 @@ this.ScenarioInitialize(scenarioInfo);
 await this.FeatureBackgroundAsync();
 #line hidden
 #line 36
-    await testRunner.ThenAsync("ele envia uma requisição GET para obter por ID \"/api/metaesg/2\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
+    await testRunner.ThenAsync("ele envia uma requisição GET para obter por ID \"/api/metaesg/3\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
 #line hidden
 #line 37
     await testRunner.ThenAsync("ele deve receber uma resposta com status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
 #line hidden
 #line 38
-    await testRunner.AndAsync("o corpo da resposta deve conter os detalhes da meta com ID 2", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+    await testRunner.AndAsync("o corpo da resposta deve conter os detalhes da meta com ID 3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Deletar meta existente com sucesso")]
-        [Xunit.TraitAttribute("FeatureTitle", "Meta")]
+        [Xunit.TraitAttribute("FeatureTitle", "Meta ESG")]
         [Xunit.TraitAttribute("Description", "Deletar meta existente com sucesso")]
         [Xunit.TraitAttribute("Category", "DeletarMeta")]
         public async System.Threading.Tasks.Task DeletarMetaExistenteComSucesso()
@@ -292,7 +292,7 @@ this.ScenarioInitialize(scenarioInfo);
 await this.FeatureBackgroundAsync();
 #line hidden
 #line 42
-    await testRunner.ThenAsync("ele deve enviara uma requisição DELETE para \"/api/metaesg/2\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
+    await testRunner.ThenAsync("ele deve enviara uma requisição DELETE para \"/api/metaesg/50\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
 #line hidden
 #line 43
     await testRunner.ThenAsync("ele deve receber uma resposta com status code 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Então ");
@@ -311,12 +311,12 @@ await this.FeatureBackgroundAsync();
             
             async System.Threading.Tasks.Task Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await MetaFeature.FeatureSetupAsync();
+                await MetaESGFeature.FeatureSetupAsync();
             }
             
             async System.Threading.Tasks.Task Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await MetaFeature.FeatureTearDownAsync();
+                await MetaESGFeature.FeatureTearDownAsync();
             }
         }
     }

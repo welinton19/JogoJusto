@@ -12,7 +12,27 @@ public class MappingProfile : AutoMapper.Profile
         CreateMap<EsgLogModel, EsgLogViewModel>().ReverseMap();
 
         CreateMap<FuncionarioModel, FuncionarioViewModel>().ReverseMap();
-        CreateMap<FuncionarioCreateViewModel, FuncionarioModel>();
+        //CreateMap<FuncionarioCreateViewModel, FuncionarioModel>();
+
+        CreateMap<FuncionarioCreateViewModel, FuncionarioModel>()
+            .ForMember(dest => dest.Cargo,
+                opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Cargo) ? "Não informado" : src.Cargo))
+            .ForMember(dest => dest.Nome,
+                opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Nome) ? "Não informado" : src.Nome))
+            .ForMember(dest => dest.Genero,
+                opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Genero) ? "Não informado" : src.Genero))
+            .ForMember(dest => dest.Raca,
+                opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Raca) ? "Não informado" : src.Raca))
+            .ForMember(dest => dest.Cpf,
+                opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Cpf) ? "000.000.000-00" : src.Cpf))
+            .ForMember(dest => dest.Departamento, opt => opt.Ignore())
+            .ForMember(dest => dest.Mentor, opt => opt.Ignore())
+            .ForMember(dest => dest.Mentorados, opt => opt.Ignore())
+            .ForMember(dest => dest.Desenvolvimentos, opt => opt.Ignore());
+
+
+
+
         CreateMap<FuncionarioUpdateViewModel, FuncionarioModel>()
            .ForAllMembers(opts =>
            {

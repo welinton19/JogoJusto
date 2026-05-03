@@ -13,7 +13,12 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.DefaultIgnoreCondition = 
+        System.Text.Json.Serialization.JsonIgnoreCondition.Never;
+    });
 
 
 builder.Services.AddValidatorsFromAssemblyContaining<UsuarioCreateViewModelValidator>();

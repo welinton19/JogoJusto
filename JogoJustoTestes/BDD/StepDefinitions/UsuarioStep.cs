@@ -9,20 +9,19 @@ public class UsuarioStep
 {
     private readonly ScenarioContext _scenarioContext;
     private readonly HttpClient _httpClient;
-    private HttpResponseMessage _httpMessageResponse;
-
-    public UsuarioStep(ScenarioContext scenarioContext)  
+   
+    public UsuarioStep(ScenarioContext scenarioContext, HttpClient httpClient)  
     {
         _scenarioContext = scenarioContext;
-        _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri("https://jogojusto-dev-h0e9bsesfjgkeydd.eastus2-01.azurewebsites.net/");
+        _httpClient = httpClient;
+
     }
 
     [Given("que o usuário tem dados válidos")]
     public void GivenDadoQueOUsuarioTemDadosValidos()
     {
         _scenarioContext["tipo"] = "Admin";
-        _scenarioContext["email"] = "teste12@gmail.com";
+        _scenarioContext["email"] = "testando18@gmail.com";
         _scenarioContext["password"] = "Jogo14725";
     }
 
@@ -37,10 +36,10 @@ public class UsuarioStep
         };
 
         
-        _httpMessageResponse = await _httpClient.PostAsync("api/usuario/criar",
+        var response = await _httpClient.PostAsync("api/usuario/criar",
             new StringContent(JsonConvert.SerializeObject(usuarionew),
             Encoding.UTF8, "application/json"));
-        _scenarioContext["response"] = _httpMessageResponse;
+        _scenarioContext["response"] = response;
     }
 
     [Then("deve receber status {int} usuário criado com sucesso")]
@@ -69,10 +68,10 @@ public class UsuarioStep
         };
 
         
-        _httpMessageResponse = await _httpClient.PostAsync("api/usuario/criar",
+        var response = await _httpClient.PostAsync("api/usuario/criar",
             new StringContent(JsonConvert.SerializeObject(usuarionew),
             Encoding.UTF8, "application/json"));
-        _scenarioContext["response"] = _httpMessageResponse;
+        _scenarioContext["response"] = response;
     }
 
     [Then("deve receber status {int} usuário já existente ou dados inválidos")]
