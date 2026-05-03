@@ -26,7 +26,7 @@ Cenario: Listar todos os funcionários com sucesso
 Cenario: Buscar funcionário existente por ID
 	Quando ele envia uma requisição GET para "/api/funcionario/2" para buscar um funcionário existente por ID
 	Entao ele deve receber uma resposta com status code 200 para funcionario
-	E o corpo da resposta deve conter o campo "funcionarioId"
+	E o corpo da resposta do funcionario deve conter o campo "funcionarioId"
 
 @BuscarFuncionarioInexistente
 Cenario: Buscar funcionário inexistente por ID

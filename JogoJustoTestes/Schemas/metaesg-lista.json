@@ -1,0 +1,118 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/object1777834249.json",
+    "title": "Root",
+    "type": "object",
+    "required": [
+        "items",
+        "totalCount",
+        "pageNumber",
+        "pageSize"
+    ],
+    "properties": {
+        "items": {
+            "$id": "#root/items",
+            "title": "Items",
+            "type": "array",
+            "default": [],
+            "items": {
+                "$id": "#root/items/items",
+                "title": "Items",
+                "type": "object",
+                "required": [
+                    "idMetaEsg",
+                    "tipoMetaEsg",
+                    "descricaoMetaEsg",
+                    "valorReferenciaMetaEsg",
+                    "valorAtualMetaEsg",
+                    "prazoMetaEsg"
+                ],
+                "properties": {
+                    "idMetaEsg": {
+                        "$id": "#root/items/items/idMetaEsg",
+                        "title": "Idmetaesg",
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "tipoMetaEsg": {
+                        "$id": "#root/items/items/tipoMetaEsg",
+                        "title": "Tipometaesg",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "descricaoMetaEsg": {
+                        "$id": "#root/items/items/descricaoMetaEsg",
+                        "title": "Descricaometaesg",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "valorReferenciaMetaEsg": {
+                        "$id": "#root/items/items/valorReferenciaMetaEsg",
+                        "title": "Valorreferenciametaesg",
+                        "type": "number",
+                        "default": 0
+                    },
+                    "valorAtualMetaEsg": {
+                        "$id": "#root/items/items/valorAtualMetaEsg",
+                        "title": "Valoratualmetaesg",
+                        "type": "number",
+                        "default": 0.0
+                    },
+                    "atualizacaoDados": {
+                        "$id": "#root/items/items/atualizacaoDados",
+                        "title": "Atualizacaodados",
+                        "type": [ "string", "null" ],
+                        "default": null
+                    },
+                    "prazoMetaEsg": {
+                        "$id": "#root/items/items/prazoMetaEsg",
+                        "title": "Prazometaesg",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "empresa": {
+                        "$id": "#root/items/items/empresa",
+                        "title": "Empresa",
+                        "type": [ "object", "null" ],
+                        "default": null
+                    }
+                }
+            }
+
+        },
+        "totalCount": {
+            "$id": "#root/totalCount",
+            "title": "Totalcount",
+            "type": "integer",
+            "default": 0
+        },
+        "pageNumber": {
+            "$id": "#root/pageNumber",
+            "title": "Pagenumber",
+            "type": "integer",
+            "default": 0
+        },
+        "pageSize": {
+            "$id": "#root/pageSize",
+            "title": "Pagesize",
+            "type": "integer",
+            "default": 0
+        },
+        "nextPage": {
+            "$id": "#root/nextPage",
+            "title": "Nextpage",
+            "type": [ "string", "null" ],
+            "default": null
+        },
+        "previousPage": {
+            "$id": "#root/previousPage",
+            "title": "Previouspage",
+            "type": [ "string", "null" ],
+            "default": null
+        }
+    }
+}

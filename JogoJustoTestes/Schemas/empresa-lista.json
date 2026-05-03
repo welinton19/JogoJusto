@@ -1,0 +1,106 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/object1777828301.json",
+    "title": "Root",
+    "type": "object",
+    "required": [
+        "items",
+        "totalCount",
+        "pageNumber",
+        "pageSize"
+    ],
+    "properties": {
+        "items": {
+            "$id": "#root/items",
+            "title": "Items",
+            "type": "array",
+            "default": [],
+            "items": {
+                "$id": "#root/items/items",
+                "title": "Items",
+                "type": "object",
+                "required": [
+                    "empresaId",
+                    "cnpj",
+                    "nome",
+                    "endereco",
+                    "telefone"
+                ],
+                "properties": {
+                    "empresaId": {
+                        "$id": "#root/items/items/empresaId",
+                        "title": "Empresaid",
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "cnpj": {
+                        "$id": "#root/items/items/cnpj",
+                        "title": "Cnpj",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "inscricaoEstadual": {
+                        "$id": "#root/items/items/inscricaoEstadual",
+                        "title": "Inscricaoestadual",
+                        "type": [ "string", "null" ],
+                        "default": ""
+                    },
+                    "nome": {
+                        "$id": "#root/items/items/nome",
+                        "title": "Nome",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "endereco": {
+                        "$id": "#root/items/items/endereco",
+                        "title": "Endereco",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "telefone": {
+                        "$id": "#root/items/items/telefone",
+                        "title": "Telefone",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    }
+                }
+            }
+
+        },
+        "totalCount": {
+            "$id": "#root/totalCount",
+            "title": "Totalcount",
+            "type": "integer",
+            "default": 0
+        },
+        "pageNumber": {
+            "$id": "#root/pageNumber",
+            "title": "Pagenumber",
+            "type": "integer",
+            "default": 0
+        },
+        "pageSize": {
+            "$id": "#root/pageSize",
+            "title": "Pagesize",
+            "type": "integer",
+            "default": 0
+        },
+        "nextPage": {
+            "$id": "#root/nextPage",
+            "title": "Nextpage",
+            "type": [ "string", "null" ],
+            "default": null
+        },
+        "previousPage": {
+            "$id": "#root/previousPage",
+            "title": "Previouspage",
+            "type": [ "string", "null" ],
+            "default": null
+        }
+    }
+}

@@ -45,13 +45,13 @@ public class LoginStep
     public async Task EntaoDeveReceberStatusEMensagemDeSucesso(int statusCode)
     {
         var response = (HttpResponseMessage)_scenarioContext["response"];
-
-        
+             
         Assert.Equal(statusCode, (int)response.StatusCode);
-
-        
+                
         var content = await response.Content.ReadAsStringAsync();
         Assert.NotEmpty(content);
+
+        SharedSteps.ValidarJsonSchema(content, "usuario-login.json");
     }
 
     [Given("que o usuário tem um login inválido")]

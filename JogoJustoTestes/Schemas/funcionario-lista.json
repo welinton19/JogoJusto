@@ -1,0 +1,123 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/object1777830337.json",
+    "title": "Root",
+    "type": "object",
+    "required": [
+        "items",
+        "totalCount",
+        "pageNumber",
+        "pageSize"
+    ],
+    "properties": {
+        "items": {
+            "$id": "#root/items",
+            "title": "Items",
+            "type": "array",
+            "default": [],
+            "items": {
+                "$id": "#root/items/items",
+                "title": "Items",
+                "type": "object",
+                "required": [
+                    "funcionarioId",
+                    "nome",
+                    "cargo",
+                    "departamentoId",
+                    "departamentoNome"
+                ],
+                "properties": {
+                    "funcionarioId": {
+                        "$id": "#root/items/items/funcionarioId",
+                        "title": "Funcionarioid",
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "nome": {
+                        "$id": "#root/items/items/nome",
+                        "title": "Nome",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "cargo": {
+                        "$id": "#root/items/items/cargo",
+                        "title": "Cargo",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "departamentoId": {
+                        "$id": "#root/items/items/departamentoId",
+                        "title": "Departamentoid",
+                        "type": "integer",
+                        "default": 0
+                    },
+                    "departamentoNome": {
+                        "$id": "#root/items/items/departamentoNome",
+                        "title": "Departamentonome",
+                        "type": "string",
+                        "default": "",
+                        "pattern": "^.*$"
+                    },
+                    "mentorId": {
+                        "$id": "#root/items/items/mentorId",
+                        "title": "Mentorid",
+                        "type": [ "integer", "null" ],
+                        "default": null
+                    },
+                    "mentorNome": {
+                        "$id": "#root/items/items/mentorNome",
+                        "title": "Mentornome",
+                        "type": [ "string", "null" ],
+                        "default": null
+                    },
+                    "gerenteId": {
+                        "$id": "#root/items/items/gerenteId",
+                        "title": "Gerenteid",
+                        "type": [ "integer", "null" ],
+                        "default": null
+                    },
+                    "gerenteNome": {
+                        "$id": "#root/items/items/gerenteNome",
+                        "title": "Gerentenome",
+                        "type": [ "string", "null" ],
+                        "default": null
+                    }
+                }
+            }
+
+        },
+        "totalCount": {
+            "$id": "#root/totalCount",
+            "title": "Totalcount",
+            "type": "integer",
+            "default": 0
+        },
+        "pageNumber": {
+            "$id": "#root/pageNumber",
+            "title": "Pagenumber",
+            "type": "integer",
+            "default": 0
+        },
+        "pageSize": {
+            "$id": "#root/pageSize",
+            "title": "Pagesize",
+            "type": "integer",
+            "default": 0
+        },
+        "nextPage": {
+            "$id": "#root/nextPage",
+            "title": "Nextpage",
+            "type": [ "string", "null" ],
+            "default": null
+        },
+        "previousPage": {
+            "$id": "#root/previousPage",
+            "title": "Previouspage",
+            "type": [ "string", "null" ],
+            "default": null
+        }
+    }
+}

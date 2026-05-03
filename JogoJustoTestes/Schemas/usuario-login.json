@@ -1,0 +1,27 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/object1777836118.json",
+    "title": "Root",
+    "type": "object",
+    "required": [
+        "message",
+        "token"
+    ],
+    "properties": {
+        "message": {
+            "$id": "#root/message",
+            "title": "Message",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "token": {
+            "$id": "#root/token",
+            "title": "Token",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        }
+    }
+}

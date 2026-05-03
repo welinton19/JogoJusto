@@ -1,0 +1,57 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/object1777829454.json",
+    "title": "Root",
+    "type": "object",
+    "required": [
+        "empresaId",
+        "cnpj",
+        "nome",
+        "endereco",
+        "telefone"
+    ],
+    "properties": {
+        "empresaId": {
+            "$id": "#root/empresaId",
+            "title": "Empresaid",
+            "type": "integer",
+            "default": 0
+        },
+        "cnpj": {
+            "$id": "#root/cnpj",
+            "title": "Cnpj",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "inscricaoEstadual": {
+            "$id": "#root/inscricaoEstadual",
+            "title": "Inscricaoestadual",
+            "type": [ "string", "null" ],
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "nome": {
+            "$id": "#root/nome",
+            "title": "Nome",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "endereco": {
+            "$id": "#root/endereco",
+            "title": "Endereco",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "telefone": {
+            "$id": "#root/telefone",
+            "title": "Telefone",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        }
+    }
+}

@@ -89,6 +89,8 @@ public class MetaStep
         var response = (HttpResponseMessage)_scenarioContext["response"];
         var json = await response.Content.ReadAsStringAsync();
         json.Should().NotBeNullOrEmpty();
+
+        SharedSteps.ValidarJsonSchema(json, "metaesg-lista.json");
     }
 
     [Then(@"o corpo da resposta deve conter os detalhes da meta com ID (\d+)")]
@@ -97,5 +99,7 @@ public class MetaStep
         var response = (HttpResponseMessage)_scenarioContext["response"];
         var json = await response.Content.ReadAsStringAsync();
         json.Should().NotBeEmpty();
+
+        SharedSteps.ValidarJsonSchema(json, "metaesg-por-id.json");
     }
 }

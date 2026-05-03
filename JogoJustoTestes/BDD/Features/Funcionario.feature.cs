@@ -218,7 +218,7 @@ await this.FeatureBackgroundAsync();
  await testRunner.ThenAsync("ele deve receber uma resposta com status code 200 para funcionario", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Entao ");
 #line hidden
 #line 29
- await testRunner.AndAsync("o corpo da resposta deve conter o campo \"funcionarioId\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
+ await testRunner.AndAsync("o corpo da resposta do funcionario deve conter o campo \"funcionarioId\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "E ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

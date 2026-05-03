@@ -1,6 +1,8 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using TechTalk.SpecFlow;
 
 namespace JogoJustoTestes.BDD.StepDefinitions;
@@ -35,5 +37,23 @@ public class SharedSteps
 
         _client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", token);
+    }
+
+    public static void ValidarJsonSchema(string json, string nomeArquivoSchema)
+    {
+        var caminhoSchema = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory, 
+            "Schemas", 
+            nomeArquivoSchema
+        );
+
+        var schemaJson = File.ReadAllText(caminhoSchema);
+        var schema = JSchema.Parse(schemaJson);
+        var jsonObject = JObject.Parse(json);
+
+        var isValid = jsonObject.IsValid(schema, out IList<string> errorMessages);
+
+        Assert.True(isValid,
+            $"JSON Schema inválido para '{nomeArquivoSchema}': {string.Join(", ", errorMessages)}");
     }
 }

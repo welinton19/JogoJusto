@@ -1,0 +1,71 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/object1777830854.json",
+    "title": "Root",
+    "type": "object",
+    "required": [
+        "funcionarioId",
+        "nome",
+        "cargo",
+        "departamentoId"
+    ],
+    "properties": {
+        "funcionarioId": {
+            "$id": "#root/funcionarioId",
+            "title": "Funcionarioid",
+            "type": "integer",
+            "default": 0
+        },
+        "nome": {
+            "$id": "#root/nome",
+            "title": "Nome",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "cargo": {
+            "$id": "#root/cargo",
+            "title": "Cargo",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "departamentoId": {
+            "$id": "#root/departamentoId",
+            "title": "Departamentoid",
+            "type": "integer",
+            "default": 0
+        },
+        "departamentoNome": {
+            "$id": "#root/departamentoNome",
+            "title": "Departamentonome",
+            "type": [ "string", "null" ],
+            "default": null
+        },
+        "mentorId": {
+            "$id": "#root/mentorId",
+            "title": "Mentorid",
+            "type": [ "integer", "null" ],
+            "default": null
+        },
+        "mentorNome": {
+            "$id": "#root/mentorNome",
+            "title": "Mentornome",
+            "type": [ "string", "null" ],
+            "default": null
+        },
+        "gerenteId": {
+            "$id": "#root/gerenteId",
+            "title": "Gerenteid",
+            "type": [ "integer", "null" ],
+            "default": null
+        },
+        "gerenteNome": {
+            "$id": "#root/gerenteNome",
+            "title": "Gerentenome",
+            "type": [ "string", "null" ],
+            "default": null
+        }
+    }
+}

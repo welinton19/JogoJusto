@@ -55,6 +55,8 @@ public class EmpresaSteps
         var json = await response.Content.ReadAsStringAsync();                  
         json.Should().NotBeNullOrEmpty();
         json.Should().Contain("items");
+
+        SharedSteps.ValidarJsonSchema(json, "empresa-lista.json");
     }
 
     [Then(@"o corpo da resposta deve conter o campo ""(.*)""")]
@@ -63,6 +65,8 @@ public class EmpresaSteps
         var response = (HttpResponseMessage)_scenarioContext["response"];
         var json = await response.Content.ReadAsStringAsync(); json.Should().NotBeNullOrEmpty();
         json.Should().Contain(campo);
+
+        SharedSteps.ValidarJsonSchema(json, "empresa-por-id.json");
     }
 
     [Then(@"o corpo da resposta deve conter a mensagem ""(.*)""")]

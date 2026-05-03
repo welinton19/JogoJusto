@@ -1,0 +1,68 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://example.com/object1777834978.json",
+    "title": "Root",
+    "type": "object",
+    "required": [
+        "idMetaEsg",
+        "tipoMetaEsg",
+        "descricaoMetaEsg",
+        "valorReferenciaMetaEsg",
+        "valorAtualMetaEsg",
+        "prazoMetaEsg"
+    ],
+    "properties": {
+        "idMetaEsg": {
+            "$id": "#root/idMetaEsg",
+            "title": "Idmetaesg",
+            "type": "integer",
+            "default": 0
+        },
+        "tipoMetaEsg": {
+            "$id": "#root/tipoMetaEsg",
+            "title": "Tipometaesg",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "descricaoMetaEsg": {
+            "$id": "#root/descricaoMetaEsg",
+            "title": "Descricaometaesg",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "valorReferenciaMetaEsg": {
+            "$id": "#root/valorReferenciaMetaEsg",
+            "title": "Valorreferenciametaesg",
+            "type": "number",
+            "default": 0
+        },
+        "valorAtualMetaEsg": {
+            "$id": "#root/valorAtualMetaEsg",
+            "title": "Valoratualmetaesg",
+            "type": "number",
+            "default": 0.0
+        },
+        "atualizacaoDados": {
+            "$id": "#root/atualizacaoDados",
+            "title": "Atualizacaodados",
+            "type": [ "string", "null" ],
+            "default": null
+        },
+        "prazoMetaEsg": {
+            "$id": "#root/prazoMetaEsg",
+            "title": "Prazometaesg",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+        },
+        "empresa": {
+            "$id": "#root/empresa",
+            "title": "Empresa",
+            "type": [ "object", "null" ],
+            "default": null
+        }
+    }
+}

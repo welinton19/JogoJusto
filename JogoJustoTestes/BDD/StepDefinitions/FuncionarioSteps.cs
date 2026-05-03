@@ -69,6 +69,8 @@ public class FuncionarioSteps
         var json = await response.Content.ReadAsStringAsync();
         Assert.Equal(200, (int)response.StatusCode);
         Assert.Contains("items", json, StringComparison.OrdinalIgnoreCase);
+
+        SharedSteps.ValidarJsonSchema(json, "funcionario-lista.json");
     }
 
     [Then(@"ele deve receber uma resposta com status code (\d+) para funcionario")]
@@ -93,5 +95,7 @@ public class FuncionarioSteps
         var response = (HttpResponseMessage)_scenarioContext["response"];
         var json = await response.Content.ReadAsStringAsync();
         Assert.Contains(campo, json, StringComparison.OrdinalIgnoreCase);
+
+        SharedSteps.ValidarJsonSchema(json, "funcionario-por-id.json");
     }
 }
