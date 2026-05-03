@@ -21,7 +21,7 @@ public class UsuarioStep
     public void GivenDadoQueOUsuarioTemDadosValidos()
     {
         _scenarioContext["tipo"] = "Admin";
-        _scenarioContext["email"] = "testando20@gmail.com";
+        _scenarioContext["email"] = $"teste_{Guid.NewGuid()}@gmail.com";
         _scenarioContext["password"] = "Jogo14725";
     }
 
@@ -42,7 +42,7 @@ public class UsuarioStep
         _scenarioContext["response"] = response;
     }
 
-    [Then("deve receber status {int} usuário criado com sucesso")]
+    [Then("deve receber status {int} Usuário criado com sucesso.")]
     public async Task ThenDeveReceberStatusEMensagemDeSucesso(int statusCode)
     {
         var response = (HttpResponseMessage)_scenarioContext["response"];

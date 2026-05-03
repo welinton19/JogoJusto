@@ -8,7 +8,7 @@ Criar um novo usuario
 Cenario: Criar um novo usuário com dados válidos
     Dado que o usuário tem dados válidos
     Quando enviar os dados para criar um novo usuário
-    Então deve receber status 200 usuário criado com sucesso
+    Então deve receber status 200 Usuário criado com sucesso.
 
 @TesteCriarUsuarioInvalido
 Cenario: Criar  usuário com dados inválidos
